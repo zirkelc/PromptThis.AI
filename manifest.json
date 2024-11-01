@@ -1,0 +1,33 @@
+{
+	"manifest_version": 3,
+	"name": "Task Manager Extension",
+	"version": "1.0",
+	"description": "Manage tasks with context menu integration",
+	"permissions": [
+		"contextMenus",
+		"storage",
+		"activeTab",
+		"tabs",
+		"sidePanel",
+		"aiLanguageModelOriginTrial"
+	],
+	"action": {
+		"default_title": "Open "
+	},
+	"background": {
+		"service_worker": "background.js"
+	},
+	"host_permissions": [
+		"<all_urls>"
+	],
+	"content_scripts": [
+		{
+			"matches": [
+				"<all_urls>"
+			],
+			"js": [
+				"content.js"
+			]
+		}
+	]
+}

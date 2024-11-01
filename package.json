@@ -1,0 +1,13 @@
+{
+	"name": "task-manager-extension",
+	"version": "1.0.0",
+	"description": "Chrome extension for managing tasks with context menu integration",
+	"scripts": {
+		"build": "tsc",
+		"watch": "tsc -w"
+	},
+	"devDependencies": {
+		"@types/chrome": "^0.0.180",
+		"typescript": "^4.5.5"
+	}
+}
