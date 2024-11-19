@@ -35,25 +35,25 @@ PromptThis.AI seamlessly integrates AI capabilities directly into your browser's
 Here are some practical use cases:
 
 **Correct This**: Quickly correct any selected text, available on any webpage.
-- Name: `Correct This`
+- Name: Correct This
 - Prompt: "Correct this text for grammar and spelling mistakes: {{selection}}"
 
 **Rewrite This**: Write an email in your own words and make it formal before sending, available on _only Gmail_.
-- Name: `Rewrite This`
+- Name: Rewrite This
 - Prompt: "Rewrite this email to be formal: {{selection}}"
 - Conditions: 
   - URL *matches* `gmail.google.com`
   - HasSelection *is* `true`
 
 **Summarize This**: Turn any text into bullet points, available on any webpage.
-- Name: `Summarize This`
+- Name: Summarize This
 - Prompt: "Summarize this text in bullet points: {{selection}}"
 - Options:
   - Type: `Key Points`
   - Length: `Short`
 
 **Explain This**: Explain any unknown word if the page is not in English.
-- Name: `Explain This`
+- Name: Explain This
 - Prompt: "Explain this word or phrase: {{selection}}"
 - Conditions: 
   - Language *does not equal* `en`
