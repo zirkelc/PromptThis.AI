@@ -1,0 +1,24 @@
+{
+	"manifest_version": 3,
+	"name": "PromptThis.AI",
+	"version": "1.0",
+	"description": "Seamlessly integrates AI capabilities directly into your browser's context menu, making AI assistance just a right-click away",
+	"permissions": [
+		"contextMenus",
+		"storage",
+		"activeTab",
+		"tabs",
+		"sidePanel",
+		"aiLanguageModelOriginTrial",
+		"clipboardWrite",
+		"scripting"
+	],
+	"action": {},
+	"background": {
+		"service_worker": "background.js",
+		"type": "module"
+	},
+	"host_permissions": [
+		"<all_urls>"
+	]
+}

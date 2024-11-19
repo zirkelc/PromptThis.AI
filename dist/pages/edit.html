@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Edit/Add Prompt</title>
+	<link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="font-mono p-5 max-w-3xl mx-auto overflow-y-auto">
+	<div id="app" class="flex flex-col gap-3">
+		<div class="flex justify-between items-start">
+			<pre class="text-xs whitespace-pre leading-none">
+░█▀█░█▀▄░█▀█░█▄█░█▀█░▀█▀░▀█▀░█░█░▀█▀░█▀▀
+░█▀▀░█▀▄░█░█░█░█░█▀▀░░█░░░█░░█▀█░░█░░▀▀█
+░▀░░░▀░▀░▀▀▀░▀░▀░▀░░░░▀░░░▀░░▀░▀░▀▀▀░▀▀▀
+			</pre>
+
+			<button id="closeBtn" class="text-xl hover:underline">×</button>
+		</div>
+
+		<h1 id="pageTitle" class="font-bold text-lg">Edit Prompt</h1>
+
+		<div id="error" class="text-red-500" hidden></div>
+
+		<div class="flex flex-col gap-2">
+			<label for="name" class="block font-medium text-sm">Name</label>
+			<input type="text" id="name" placeholder="Name"
+				class="w-full font-mono text-sm p-2 box-border border border-gray-300 rounded-none focus:outline-none focus:border-black focus:bg-white">
+		</div>
+
+		<div class="flex flex-col gap-2">
+
+			<div class="flex items-center gap-2">
+				<label for="type" class="font-medium text-sm">Type</label>
+				<select id="type" class="w-full outline-none text-right">
+					<option value="languageModel">Language Model</option>
+					<option value="summarizer">Summarizer</option>
+					<option value="writer" disabled>Writer</option>
+					<option value="rewriter" disabled>Rewriter</option>
+				</select>
+			</div>
+
+			<p class="text-xs text-black/70">Choosing the right type for your prompt will improve the results.</p>
+		</div>
+
+		<div class="flex flex-col gap-2">
+			<label for="prompt" class="block font-medium text-sm">Prompt</label>
+			<span id="prompt"
+				class="block w-full min-h-[2em] border border-gray-300 p-3 focus-within:border-black focus-within:bg-white font-mono text-sm leading-relaxed whitespace-pre-wrap outline-none"
+				role="textbox" tabindex="0" autofocus contenteditable></span>
+			<p class="text-xs text-black/70">Variables are optional and can be used to insert dynamic content into the prompt.
+				If
+				<code class="font-mono italic">{{selection}}</code> is not present in the prompt,
+				the current text selection will be automatically appended to the end of the prompt.
+			</p>
+			<ul class="list-disc list-inside text-black/70">
+				<li><code class="font-mono italic">{{selection}}</code> The currently selected text</li>
+				<li><code class="font-mono italic">{{url}}</code> The URL of the current active tab</li>
+				<li><code class="font-mono italic">{{language}}</code> The document's language (e.g., "en-US")</li>
+			</ul>
+		</div>
+
+		<div class="flex flex-col gap-2">
+			<h2 class="font-bold text-base">Options</h2>
+		</div>
+
+		<div id="languageModelOptions" class="flex flex-col gap-2">
+			<div>
+				<div class="flex items-center gap-2">
+					<label for="topK" class="min-w-24 font-medium text-sm">Top K</label>
+					<input type="range" id="topK" class="w-full p-2 border border-gray-300 accent-black" min="1" max="8" step="1" value="4">
+					<span id="topKValue" class="w-12 text-right">4</span>
+				</div>
+				<p class="text-xs text-black/70">The top K parameter of the language model.</p>
+			</div>
+
+			<div>
+				<div class="flex items-center gap-2">
+					<label for="temperature" class="min-w-24 font-medium text-sm">Temperature</label>
+					<input type="range" id="temperature" class="w-full p-2 border border-gray-300 accent-black" min="0" max="1" step="0.1"
+						value="0.7">
+					<span id="temperatureValue" class="w-12 text-right">0.7</span>
+				</div>
+				<p class="text-xs text-black/70">The temperature parameter of the language model.</p>
+			</div>
+		</div>
+
+		<div id="summaryOptions" class="flex flex-col gap-2" hidden>
+			<div>
+				<div class="flex items-center gap-2">
+					<label for="summaryType" class="font-medium text-sm">Type</label>
+					<select id="summaryType" class="p-1 w-full outline-none text-right">
+						<option value="tl;dr">TL;DR</option>
+						<option value="key-points">Key Points</option>
+						<option value="teaser">Teaser</option>
+						<option value="headline">Headline</option>
+					</select>
+				</div>
+				<p class="text-xs text-black/70">The type of summary to generate.</p>
+			</div>
+			<div>
+				<div class="flex items-center gap-2">
+					<label for="summaryFormat" class="font-medium text-sm">Format</label>
+					<select id="summaryFormat" class="p-1 w-full outline-none text-right">
+						<option value="plain-text">Plain Text</option>
+						<option value="markdown">Markdown</option>
+					</select>
+				</div>
+				<p class="text-xs text-black/70">The format of the summary to generate.</p>
+			</div>
+
+			<div>
+				<div class="flex items-center gap-2">
+					<label for="summaryLength" class="font-medium text-sm">Length</label>
+					<select id="summaryLength" class="p-1 w-full outline-none text-right">
+						<option value="short">Short</option>
+						<option value="medium">Medium</option>
+						<option value="long">Long</option>
+					</select>
+				</div>
+				<p class="text-xs text-black/70">The length of the summary to generate.</p>
+			</div>
+		</div>
+
+		<div class="flex flex-col gap-2">
+			<div class="flex items-center gap-2">
+				<label for="autoSubmit" class="font-medium text-sm">Auto-Submit</label>
+				<input type="checkbox" id="autoSubmit" class="ml-auto accent-black">
+			</div>
+			<p class="text-xs text-black/70">If true, the prompt will be automatically submitted when the context menu is
+				clicked.</p>
+		</div>
+
+		<div class="flex flex-col gap-2">
+			<h2 class="font-bold text-base">Conditions</h2>
+			<p class="text-xs text-black/70">Conditions are optional and can be used to filter which prompts are available in
+				the context
+				menu.
+				All conditions are logically combined together.</p>
+		</div>
+
+		<div class="flex flex-col gap-2">
+			<label for="url" class="font-medium text-sm">URL</label>
+
+			<input type="text" id="url" placeholder="URL (string or /regex/)"
+				class="w-full font-mono text-sm p-2 box-border border border-gray-300 rounded-none focus:outline-none focus:border-black focus:bg-white">
+
+			<p class="text-xs text-black/70">If present, the prompt in the context menu will only be shown if the current URL
+				matches the
+				pattern.</p>
+		</div>
+
+		<div class="flex flex-col gap-2">
+			<label for="language" class="font-medium text-sm">Language</label>
+				<input type="text" id="language" placeholder="Language (string or /regex/)"
+					class="w-full font-mono text-sm p-2 box-border border border-gray-300 rounded-none focus:outline-none focus:border-black focus:bg-white">
+			<p class="text-xs text-black/70">If present, the prompt in the context menu will only be shown if the document
+				language matches the pattern.</p>
+		</div>
+
+		<div class="flex flex-col gap-2">
+			<div class="flex items-center gap-2">
+				<label for="hasSelection" class="font-medium text-sm">Has Selection</label>
+				<input type="checkbox" id="hasSelection" class="ml-auto accent-black">
+			</div>
+			<p class="text-xs text-black/70">If true, the prompt will only be shown if there is a text selection on the page.</p>
+		</div>
+
+		<div class="flex gap-5">
+			<button id="saveBtn"
+				class="bg-black text-white px-2 py-1 hover:opacity-80 disabled:bg-transparent disabled:text-black/50 disabled:border disabled:border-black/50">Submit</button>
+			<button id="cancelBtn" class="hover:underline">Cancel</button>
+		</div>
+	</div>
+
+	<script type="module" src="edit.js"></script>
+</body>
+
+</html>

@@ -10,5 +10,11 @@
 	},
 	"[typescript]": {
 		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[html]": {
+		"editor.formatOnSave": false,
+		"editor.formatOnType": false,
+		"editor.formatOnPaste": false,
+		"editor.defaultFormatter": null,
 	}
 }

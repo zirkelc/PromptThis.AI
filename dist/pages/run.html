@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Run Prompt</title>
+	<link rel="stylesheet" href="./style.css">
+	<style>
+.loading-dots {
+  position: relative;
+}
+
+.loading-dots:after {
+  content: '.';
+  animation: dots 1s steps(5, end) infinite;
+}
+
+@keyframes dots {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75%, 100% { content: '...'; }
+}
+
+.loading-braille:after {
+  content: '⠋';
+  animation: braille 1s infinite steps(10);
+}
+
+@keyframes braille {
+  0% { content: '⠋'; }
+  10% { content: '⠙'; }
+  20% { content: '⠹'; }
+  30% { content: '⠸'; }
+  40% { content: '⠼'; }
+  50% { content: '⠴'; }
+  60% { content: '⠦'; }
+  70% { content: '⠧'; }
+  80% { content: '⠇'; }
+  90% { content: '⠏'; }
+}
+	</style>
+</head>
+
+<body class="font-mono p-5 max-w-3xl mx-auto overflow-y-auto">
+	<div id="app" class="flex flex-col gap-5">
+		<div class="flex justify-between items-start">
+			<pre class="text-xs whitespace-pre leading-none">
+░█▀█░█▀▄░█▀█░█▄█░█▀█░▀█▀░▀█▀░█░█░▀█▀░█▀▀
+░█▀▀░█▀▄░█░█░█░█░█▀▀░░█░░░█░░█▀█░░█░░▀▀█
+░▀░░░▀░▀░▀▀▀░▀░▀░▀░░░░▀░░░▀░░▀░▀░▀▀▀░▀▀▀
+			</pre>
+			<button id="closeBtn" class="text-xl hover:underline">×</button>
+		</div>
+
+		<h1 id="name" class="font-bold text-lg">Run Prompt</h1>
+
+		<div id="error" class="text-red-500" hidden></div>
+
+		<div
+			class="flex flex-col border border-gray-300 bg-gray-50 gap-4 mb-5 p-3 focus-within:border-black focus-within:bg-white">
+
+			<div id="languageModelOptions" class="flex gap-2" hidden>
+				<div class="flex items-center gap-2">
+					<div class="flex border">
+						<label for="languageModelTopK" class="px-2 py-1 bg-gray-50 border-r">Top K</label>
+						<input type="number" id="languageModelTopK" class="p-1 w-12 outline-none text-right accent-black" min="1" max="8" step="1">
+					</div>
+				</div>
+				<div class="flex items-center gap-2">
+					<div class="flex border">
+						<label for="languageModelTemperature" class="px-2 py-1 bg-gray-50 border-r">Temperature</label>
+						<input type="number" id="languageModelTemperature" class="p-1 w-12 outline-none text-right accent-black" min="0" max="1" step="0.1">
+					</div>
+				</div>
+			</div>
+
+			<div id="summaryOptions" class="flex gap-2" hidden>
+				<select id="summaryType" class="border p-1 accent-black">
+					<option value="tl;dr">TL;DR</option>
+					<option value="key-points">Key Points</option>
+					<option value="teaser">Teaser</option>
+					<option value="headline">Headline</option>
+				</select>
+				<select id="summaryFormat" class="border p-1 accent-black">
+					<option value="plain-text">Plain Text</option>
+					<option value="markdown">Markdown</option>
+				</select>
+				<select id="summaryLength" class="border p-1 accent-black">
+					<option value="short">Short</option>
+					<option value="medium">Medium</option>
+					<option value="long">Long</option>
+				</select>
+			</div>
+
+			<span id="prompt"
+				class="block w-full min-h-[1.4em] p-0 border-none bg-transparent font-mono text-sm leading-relaxed whitespace-pre-wrap outline-none"
+				role="textbox" tabindex="0" autofocus contenteditable></span>
+
+			<div class="flex gap-5">
+				<button id="submitBtn"
+					class="bg-black text-white px-2 py-1 hover:opacity-80 disabled:bg-transparent disabled:text-black/50 disabled:border disabled:border-black/50">Submit</button>
+				<button id="resetBtn" class="disabled:text-black/50 disabled:hover:no-underline hover:underline">Reset</button>
+			</div>
+		</div>
+
+		<div id="result" class="text-sm whitespace-pre-wrap"></div>
+
+		<div id="loading" class="flex items-center gap-1 text-sm">
+			<span class="loading-braille"></span>
+			<span>Generating</span>
+			<span class="loading-dots"></span>
+		</div>
+
+		<div class="flex gap-5">
+			<button id="insertBtn"
+				class="bg-black text-white px-2 py-1 hover:opacity-80 disabled:bg-transparent disabled:text-black/50 disabled:border disabled:border-black/50"
+				hidden>Insert</button>
+			<button id="copyBtn" class="hover:underline" hidden>Copy</button>
+			<button id="cancelBtn" class="bg-black text-white px-2 py-1 hover:opacity-80" hidden>Cancel</button>
+		</div>
+	</div>
+
+	<script type="module" src="run.js"></script>
+</body>
+
+</html>

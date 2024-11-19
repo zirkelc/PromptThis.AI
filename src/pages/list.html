@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Prompt List</title>
+	<link rel="stylesheet" href="./style.css">
+</head>
+
+
+<body class="font-mono p-5 max-w-3xl mx-auto overflow-y-auto">
+	<div id="app" class="flex flex-col gap-5">
+		<div class="flex justify-between items-start">
+			<pre class="text-xs whitespace-pre leading-none">
+░█▀█░█▀▄░█▀█░█▄█░█▀█░▀█▀░▀█▀░█░█░▀█▀░█▀▀
+░█▀▀░█▀▄░█░█░█░█░█▀▀░░█░░░█░░█▀█░░█░░▀▀█
+░▀░░░▀░▀░▀▀▀░▀░▀░▀░░░░▀░░░▀░░▀░▀░▀▀▀░▀▀▀
+			</pre>
+
+			<button id="closeBtn" class="text-xl hover:underline">×</button>
+		</div>
+
+		<div class="flex gap-5">
+			<button id="addBtn"
+				class="bg-black text-white px-2 py-1 hover:opacity-80 disabled:bg-transparent disabled:text-black/50 disabled:border disabled:border-black/50">Add
+				Prompt</button>
+		</div>
+		<div id="promptList">
+		</div>
+	</div>
+	<script type="module" src="list.js"></script>
+</body>
+
+</html>

@@ -1,13 +1,26 @@
 {
-	"name": "task-manager-extension",
-	"version": "1.0.0",
-	"description": "Chrome extension for managing tasks with context menu integration",
+	"name": "promptthis-ai",
+	"private": true,
 	"scripts": {
-		"build": "tsc",
-		"watch": "tsc -w"
+		"build": "rollup -c",
+		"watch": "rollup -c -w"
 	},
 	"devDependencies": {
-		"@types/chrome": "^0.0.180",
+		"@rollup/plugin-commonjs": "^28.0.1",
+		"@rollup/plugin-node-resolve": "^15.3.0",
+		"@rollup/plugin-typescript": "^12.1.1",
+		"@types/chrome": "^0.0.281",
+		"@types/dom-chromium-ai": "^0.0.2",
+		"autoprefixer": "^10.4.20",
+		"marked": "^15.0.0",
+		"postcss": "^8.4.49",
+		"rollup": "^4.26.0",
+		"rollup-plugin-copy": "^3.5.0",
+		"rollup-plugin-empty-dir": "^1.0.5",
+		"rollup-plugin-postcss": "^4.0.2",
+		"tailwindcss": "^3.4.14",
+		"tslib": "^2.8.1",
 		"typescript": "^4.5.5"
-	}
+	},
+	"dependencies": {}
 }
