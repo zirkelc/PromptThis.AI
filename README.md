@@ -35,27 +35,31 @@ PromptThis.AI seamlessly integrates AI capabilities directly into your browser's
 Here are some practical use cases:
 
 **Correct This**: Quickly correct any selected text, available on any webpage.
+- Name: `Correct This`
 - Prompt: "Correct this text for grammar and spelling mistakes: {{selection}}"
 
 **Rewrite This**: Write an email in your own words and make it formal before sending, available on _only Gmail_.
+- Name: `Rewrite This`
 - Prompt: "Rewrite this email to be formal: {{selection}}"
 - Conditions: 
   - URL *matches* `gmail.google.com`
-  - HasSelection *is true*
+  - HasSelection *is* `true`
 
 **Summarize This**: Turn any text into bullet points, available on any webpage.
+- Name: `Summarize This`
 - Prompt: "Summarize this text in bullet points: {{selection}}"
 - Options:
   - Type: `Key Points`
   - Length: `Short`
-	
+
 **Explain This**: Explain any unknown word if the page is not in English.
+- Name: `Explain This`
 - Prompt: "Explain this word or phrase: {{selection}}"
 - Conditions: 
   - Language *does not equal* `en`
-  - HasSelection *is true*
+  - HasSelection *is* `true`
 
-There are more examples like translating selected text, but the models are currently prohibited from generating certain languages.
+There are more examples like translating selected text from one language to another, but the models are currently prohibited from generating text in certain languages.
 
 ## [AI APIs](https://developer.chrome.com/docs/ai/built-in-apis)
 The extensions uses [Prompt API](https://github.com/explainers-by-googlers/prompt-api/) (`type: languageModel`) and the [Summarizer API](https://github.com/WICG/writing-assistance-apis) (`type: summarizer`). 
@@ -110,20 +114,24 @@ The following options are available:
 ## Ideas For the Future
 
 **Translation**
+
 Integrating the Translator API to allow for instant translations of selected text with a shortcut like `Ctrl+C+C`.
 
 **Conditions**
+
 Add more conditions to control when an AI task should appear in the context menu:
 - `IsEditable` to check if the right-clicked element is an editable text input
 - `IsImage` to check if the right-clicked element is an image
 - `CssSelector` to check if the right-clicked element matches a CSS selector
 
 **Variables**
+
 Add more variables for dynamic prompts:
 - `Cursor` to control where the cursor is placed inside the prompt input when it is opened
 - `TextContent` or `HtmlContent` to insert the text or html content of the right-clicked element
 
 **Complex Use Cases**
+
 Lets says I want to an AI task to proof-read any text I type in a textarea. I don't want to have to select the text first, just right-click on the textarea and click on the AI task.
 I could use a `CssSelector` like `textarea` to enable the task on all textareas on every page and use the `TextContent` variable to insert the text of the textarea into the prompt.
 
