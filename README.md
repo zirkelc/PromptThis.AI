@@ -62,8 +62,9 @@ Here are some practical use cases:
 There are more examples like translating selected text from one language to another, but the models are currently prohibited from generating text in certain languages.
 
 ## [AI APIs](https://developer.chrome.com/docs/ai/built-in-apis)
-The extensions uses [Prompt API](https://github.com/explainers-by-googlers/prompt-api/) (`type: languageModel`) and the [Summarizer API](https://github.com/WICG/writing-assistance-apis) (`type: summarizer`). 
-The [Writer API](https://github.com/WICG/writing-assistance-apis) and [Rewriter API](https://github.com/WICG/writing-assistance-apis) could not be used at the time of this submission because of a [known bug](https://issues.chromium.org/issues/374942272). However, it is planned to integrate these APIs as when their design has been stabilized.
+The extensions currently uses [Prompt API](https://github.com/explainers-by-googlers/prompt-api/) (`type: languageModel`) and the [Summarizer API](https://github.com/WICG/writing-assistance-apis) (`type: summarizer`). 
+
+The [Writer API](https://github.com/WICG/writing-assistance-apis) and [Rewriter API](https://github.com/WICG/writing-assistance-apis) could not be used at the time of this submission because of a [known bug](https://issues.chromium.org/issues/374942272). However, it is planned to integrate these APIs when their design has been stabilized.
 
 ## Configuration
 Each prompt has the following mandatory fields:
