@@ -97,23 +97,23 @@ The following conditions are available:
 | `HasSelection` | The prompt should only be shown if there is a text selection on the page | `boolean` | `false` |
 
 ### Options
-Options control the behavior of the prompt when it is shown in the sidepanel.
+Options control the behavior of the prompt when it is opened in the sidepanel.
 
 The following options are available:
 | Field | Description | Type | Default |
 | ----- | ----------- | ------- | ------- |
-| `AutoSubmit` | Whether the prompt should be submitted automatically when the user clicks on the submit button | `boolean` | `false` |
+| `AutoSubmit` | Whether the prompt should be submitted automatically when it is selected from the context menu | `boolean` | `false` |
 | `LanguageModelTemperature` | Temperature of the language model, if `type` is `languageModel` | `number` | `0.7` |
-| `LanguageModelTopK` | Top-k of the language model, if `type` is `languageModel` | `number` | `40` |
-| `SummaryType` | Type of the summary, if `type` is `summarizer` | `Key Points \| Short \| Long` | `Key Points` |
-| `SummaryFormat` | Format of the summary, if `type` is `summarizer` | `Bullets \| Paragraphs` | `Bullets` |
-| `SummaryLength` | The length of the summary, if `type` is `summarizer` | `Short \| Medium \| Long` | `Short` |
-| `RewriterTone` | Tone of the rewriter, if `type` is `rewriter` | `Casual \| Formal \| Technical` | `Casual` |
-| `RewriterFormat` | Format of the rewriter, if `type` is `rewriter` | `As Is \| Simplified` | `As Is` |
-| `RewriterLength` | Length of the rewriter, if `type` is `rewriter` | `Shorter \| Shorter \| Longer` | `Shorter` |
+| `LanguageModelTopK` | Top-k of the language model, if `type` is `languageModel` | `number` | `8` |
+| `SummaryType` | Type of the summary, if `type` is `summarizer` | `Key Points \| Teaser \| Headline \| TL;DR` | `Key Points` |
+| `SummaryFormat` | Format of the summary, if `type` is `summarizer` | `Markdown \| Plain Text` | `Markdown` |
+| `SummaryLength` | Length of the summary, if `type` is `summarizer` | `Short \| Medium \| Long` | `Short` |
+| `RewriterTone` | Tone of the rewriter, if `type` is `rewriter` | `As Is \| More Formal \| More Casual` | `As Is` |
+| `RewriterFormat` | Format of the rewriter, if `type` is `rewriter` | `As Is \| Markdown \| Plain Text` | `As Is` |
+| `RewriterLength` | Length of the rewriter, if `type` is `rewriter` | `As Is \| Shorter \| Longer` | `Shorter` |
 
 ## Usage
-The extension is currently only available for Chrome Canary.
+The extension is currently only available for Google Chrome Canary.
 
 
 ### Install
@@ -130,7 +130,6 @@ The extension is currently only available for Chrome Canary.
 Open the extension by clicking on the `PromptThis.AI` icon in the Chrome toolbar.
 The extensions comes with a default set of prompts, but you can also add your own prompts by clicking on the `Add Prompt` button in the extension sidepanel or right-clicking on any page and select `Add Prompt`.
 For quick one-off tasks, the `Prompt This` context menu option is always available on any page.
-
 
 ## Ideas For the Future
 
