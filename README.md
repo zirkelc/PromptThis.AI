@@ -36,39 +36,37 @@ Here are some practical use cases for AI tasks:
 
 **Correct This Text**: Quickly correct any selected text, available on any webpage.
 - Name: Correct This Text
-- Prompt: "Correct this text for grammar and spelling mistakes: {{selection}}"
+- Prompt: Correct this text for grammar and spelling mistakes: {{selection}}
 
-**Rewrite This Email**: Write an email in your own words and make it more formal before sending, available on _only Gmail_.
+**Rewrite This Email**: Write an email in your own words and make it more formal before sending, available _only on Gmail_.
 - Name: Rewrite This Email
-- Prompt: "Rewrite this email to be more formal: {{selection}}"
+- Prompt: Rewrite this email to be more formal: {{selection}}
 - Conditions: 
   - URL *contains* `mail.google.com`
   - HasSelection *is* `true`
 
 **Summarize This Article**: Turn any text into bullet points, available on any webpage.
 - Name: Summarize This Article
-- Prompt: "Summarize this text in bullet points: {{selection}}"
+- Prompt: Summarize this text in bullet points: {{selection}}
 - Options:
   - Type: `Key Points`
   - Length: `Short`
 - Conditions:
   - HasSelection *is* `true`
 
-**Explain This Word**: Explain any unknown word, available only on English pages.
+**Explain This Word**: Explain any unknown word, available _only on English pages_.
 - Name: Explain This Word
-- Prompt: "Explain this word or phrase: {{selection}}"
+- Prompt: Explain this word or phrase: {{selection}}
 - Conditions: 
   - Language *matches* `/^en/`
   - HasSelection *is* `true`
 
-**Shorten This Tweet**: Shorten your tweet to 300 characters or less, available on _only_ Twitter, X, and Bluesky.
+**Shorten This Tweet**: Shorten your tweet to 300 characters or less, available _only on Twitter/X and Bluesky_.
 - Name: Shorten This Tweet
-- Prompt: "Shorten this tweet to 300 characters or less: {{selection}}"
+- Prompt: Shorten this tweet to 300 characters or less: {{selection}}
 - Conditions:
   - URL *matches* `/twitter\.com|x\.com|bsky\.app/`
   - HasSelection *is* `true`
-
-There are more examples like translating selected text from one language to another, but the models are currently prohibited from generating text in certain languages.
 
 ## [AI APIs](https://developer.chrome.com/docs/ai/built-in-apis)
 The extensions currently uses [Prompt API](https://github.com/explainers-by-googlers/prompt-api/) (`type: languageModel`), the [Summarizer API](https://github.com/WICG/writing-assistance-apis) (`type: summarizer`), and the [Rewriter API](https://github.com/WICG/writing-assistance-apis) (`type: rewriter`). 
@@ -128,7 +126,9 @@ The extension is currently only available for Google Chrome Canary.
 
 ### Use
 Open the extension by clicking on the `PromptThis.AI` icon in the Chrome toolbar.
+
 The extensions comes with a default set of prompts, but you can also add your own prompts by clicking on the `Add Prompt` button in the extension sidepanel or right-clicking on any page and select `Add Prompt`.
+
 For quick one-off tasks, the `Prompt This` context menu option is always available on any page.
 
 ## Ideas For the Future
