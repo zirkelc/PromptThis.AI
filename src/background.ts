@@ -1,7 +1,8 @@
 import { updateContextMenu, MenuItemIds } from './libs/context-menu.js';
+import { encodeText } from './libs/html-utils.js';
 import { initDefaultPrompts } from './libs/prompts.js';
 import { openSidePanel, resetSidepanel } from './libs/sidepanel.js';
-import { getActiveTab } from './libs/tabs.js';
+import { getActiveTab, getTab } from './libs/tabs.js';
 
 /**
  * Open settings page when extension icon is clicked.
@@ -55,12 +56,22 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 });
 
 /**
+ * Update context menus when a tab is activated.
+ */
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  console.log('tabs.onActivated', { activeInfo });
+
+  const tab = await getTab(activeInfo.tabId);
+  await updateContextMenu(tab);
+});
+
+/**
  * Update context menus when a tab is updated.
  */
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete') {
-    console.log('tabs.onUpdated', { tabId, changeInfo, tab });
+  console.log('tabs.onUpdated', { tabId, changeInfo, tab });
 
+  if (changeInfo.status === 'complete') {
     await updateContextMenu(tab);
   }
 });

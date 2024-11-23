@@ -32,39 +32,46 @@ PromptThis.AI seamlessly integrates AI capabilities directly into your browser's
 5. Copy or directly insert the AI-generated result into your work
 
 ### Examples
-Here are some practical use cases:
+Here are some practical use cases for AI tasks:
 
-**Correct This**: Quickly correct any selected text, available on any webpage.
-- Name: Correct This
+**Correct This Text**: Quickly correct any selected text, available on any webpage.
+- Name: Correct This Text
 - Prompt: "Correct this text for grammar and spelling mistakes: {{selection}}"
 
-**Rewrite This**: Write an email in your own words and make it formal before sending, available on _only Gmail_.
-- Name: Rewrite This
-- Prompt: "Rewrite this email to be formal: {{selection}}"
+**Rewrite This Email**: Write an email in your own words and make it more formal before sending, available on _only Gmail_.
+- Name: Rewrite This Email
+- Prompt: "Rewrite this email to be more formal: {{selection}}"
 - Conditions: 
-  - URL *matches* `gmail.google.com`
+  - URL *contains* `mail.google.com`
   - HasSelection *is* `true`
 
-**Summarize This**: Turn any text into bullet points, available on any webpage.
-- Name: Summarize This
+**Summarize This Article**: Turn any text into bullet points, available on any webpage.
+- Name: Summarize This Article
 - Prompt: "Summarize this text in bullet points: {{selection}}"
 - Options:
   - Type: `Key Points`
   - Length: `Short`
+- Conditions:
+  - HasSelection *is* `true`
 
-**Explain This**: Explain any unknown word if the page is not in English.
-- Name: Explain This
+**Explain This Word**: Explain any unknown word, available only on English pages.
+- Name: Explain This Word
 - Prompt: "Explain this word or phrase: {{selection}}"
 - Conditions: 
-  - Language *does not equal* `en`
+  - Language *matches* `/^en/`
+  - HasSelection *is* `true`
+
+**Shorten This Tweet**: Shorten your tweet to 300 characters or less, available on _only_ Twitter, X, and Bluesky.
+- Name: Shorten This Tweet
+- Prompt: "Shorten this tweet to 300 characters or less: {{selection}}"
+- Conditions:
+  - URL *matches* `/twitter\.com|x\.com|bsky\.app/`
   - HasSelection *is* `true`
 
 There are more examples like translating selected text from one language to another, but the models are currently prohibited from generating text in certain languages.
 
 ## [AI APIs](https://developer.chrome.com/docs/ai/built-in-apis)
-The extensions currently uses [Prompt API](https://github.com/explainers-by-googlers/prompt-api/) (`type: languageModel`) and the [Summarizer API](https://github.com/WICG/writing-assistance-apis) (`type: summarizer`). 
-
-The [Writer API](https://github.com/WICG/writing-assistance-apis) and [Rewriter API](https://github.com/WICG/writing-assistance-apis) could not be used at the time of this submission because of a [known bug](https://issues.chromium.org/issues/374942272). However, it is planned to integrate these APIs when their design has been stabilized.
+The extensions currently uses [Prompt API](https://github.com/explainers-by-googlers/prompt-api/) (`type: languageModel`), the [Summarizer API](https://github.com/WICG/writing-assistance-apis) (`type: summarizer`), and the [Rewriter API](https://github.com/WICG/writing-assistance-apis) (`type: rewriter`). 
 
 ## Configuration
 Each prompt has the following mandatory fields:
@@ -73,13 +80,13 @@ Each prompt has the following mandatory fields:
 | ----- | ----------- | ------- | ------- |
 | `Name` | The name of the prompt which appears in the context menu | `string` | - |
 | `Prompt` | The prompt text with placeholder variables | `string` | - |
-| `Type` | The type of the prompt which determines which AI API to use | `languageModel \| summarizer` | `languageModel` |
+| `Type` | The type of the prompt which determines which AI API to use | `languageModel \| summarizer \| rewriter` | `languageModel` |
 
 
 ### Conditions
 Conditions control when a prompt should be shown in the context menu. 
 They are optional and if no conditions are provided, the prompt will be shown in the context menu on all pages.
-If multiple conditions are provided, the prompt will be shown if all conditions are met.
+If multiple conditions are provided, the prompt will be shown only if all conditions are met.
 
 The following conditions are available:
 
@@ -101,8 +108,15 @@ The following options are available:
 | `SummaryType` | Type of the summary, if `type` is `summarizer` | `Key Points \| Short \| Long` | `Key Points` |
 | `SummaryFormat` | Format of the summary, if `type` is `summarizer` | `Bullets \| Paragraphs` | `Bullets` |
 | `SummaryLength` | The length of the summary, if `type` is `summarizer` | `Short \| Medium \| Long` | `Short` |
+| `RewriterTone` | Tone of the rewriter, if `type` is `rewriter` | `Casual \| Formal \| Technical` | `Casual` |
+| `RewriterFormat` | Format of the rewriter, if `type` is `rewriter` | `As Is \| Simplified` | `As Is` |
+| `RewriterLength` | Length of the rewriter, if `type` is `rewriter` | `Shorter \| Shorter \| Longer` | `Shorter` |
 
 ## Usage
+The extension is currently only available for Chrome Canary.
+
+
+### Install
 1. Clone this repository to your local machine.
 2. Run `pnpm install` to install the dependencies.
 3. Run `pnpm run build` to build the extension to the `dist` folder.
@@ -112,7 +126,16 @@ The following options are available:
 
 **Note:** The `/dist` folder was committed to this remote repository for a quick start. That means you can skip the steps 2 and 3 above.
 
+### Use
+Open the extension by clicking on the `PromptThis.AI` icon in the Chrome toolbar.
+The extensions comes with a default set of prompts, but you can also add your own prompts by clicking on the `Add Prompt` button in the extension sidepanel or right-clicking on any page and select `Add Prompt`.
+For quick one-off tasks, the `Prompt This` context menu option is always available on any page.
+
+
 ## Ideas For the Future
+
+While the current version of PromptThis.AI already supports a lot of use cases, there are still many ideas on how to improve it even more.
+Here are some of my favorite ideas:
 
 **Translation**
 
@@ -124,6 +147,7 @@ Add more conditions to control when an AI task should appear in the context menu
 - `IsEditable` to check if the right-clicked element is an editable text input
 - `IsImage` to check if the right-clicked element is an image
 - `CssSelector` to check if the right-clicked element matches a CSS selector
+- `HasMetaTag` to check if page has a meta tag with a given name and value
 
 **Variables**
 
@@ -131,10 +155,18 @@ Add more variables for dynamic prompts:
 - `Cursor` to control where the cursor is placed inside the prompt input when it is opened
 - `TextContent` or `HtmlContent` to insert the text or html content of the right-clicked element
 
+**Options**
+
+Add more options to control the behavior of an AI task when it is opened or executed:
+- `AutoSelect` to automatically select the content of the right-clicked element
+- `AutoInsert` to insert the generated text right back into the right-clicked element of the page
+- `AutoCopy` to copy the generated text into the clipboard
+
 **Complex Use Cases**
 
-Lets says I want to an AI task to proof-read any text I type in a textarea. I don't want to have to select the text first, just right-click on the textarea and click on the AI task.
-I could use a `CssSelector` like `textarea` to enable the task on all textareas on every page and use the `TextContent` variable to insert the text of the textarea into the prompt.
+Lets says I want to an AI task to proof-read any text I type in a textarea. 
+I don't want to have to select the text first, just right-click on the textarea and click on the AI task.
+I could use a `CssSelector` like `textarea:read-write` to enable the task on all textareas on every page and use the `TextContent` variable to insert the text of the textarea into the prompt. The options could be set to `AutoSubmit` and `AutoInsert` to make it as seamless as possible. A right-click on the textarea would then proof-read it and insert the result right back into the textarea.
 
 ## License
 MIT

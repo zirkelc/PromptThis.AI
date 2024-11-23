@@ -37,7 +37,13 @@ export function setValue(element: HTMLElement, value: string | boolean | number)
     return;
   }
 
-  element.textContent = String(value);
+  if (element.isContentEditable) {
+    console.log('isContentEditable', { element, value });
+    // Convert \n to <br> for contentEditable elements
+    element.innerHTML = String(value).replace(/\n/g, '<br>').trim();
+  } else {
+    element.textContent = String(value).trim();
+  }
 }
 
 export function getValue(element: HTMLInputCheckboxElement): boolean;
@@ -54,6 +60,13 @@ export function getValue(element: HTMLElement): string | boolean | number {
 
   if (element instanceof HTMLSelectElement) {
     return element.value;
+  }
+
+  if (element.isContentEditable) {
+    // Convert <br> back to \n for contentEditable elements
+    return element.innerHTML
+      .replace(/<br\s*\/?>/gi, '\n') // Convert <br>, <br/>, <br /> to \n
+      .trim();
   }
 
   return element.textContent?.trim() ?? '';
@@ -77,4 +90,20 @@ export function goto(path: string): void {
 
 export function scrollDown(): void {
   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
+export function encodeText(text: string): string {
+  console.log('encodeText', { text });
+
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(text);
+  return btoa(String.fromCharCode(...bytes));
+}
+
+export function decodeText(encoded: string): string {
+  console.log('decodeText', { encoded });
+
+  const decoder = new TextDecoder();
+  const bytes = Uint8Array.from(atob(encoded), (c) => c.charCodeAt(0));
+  return decoder.decode(bytes);
 }

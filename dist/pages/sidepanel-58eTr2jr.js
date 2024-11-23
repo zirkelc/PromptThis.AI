@@ -5,4 +5,4 @@ function closeSidepanel() {
 }
 
 export { closeSidepanel as c };
-//# sourceMappingURL=sidepanel-BzuFFCt1.js.map
+//# sourceMappingURL=sidepanel-58eTr2jr.js.map

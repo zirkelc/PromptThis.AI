@@ -2,6 +2,10 @@ import {
   type ApiType,
   ApiTypes,
   type LanguageModelOptions,
+  RewriterFormats,
+  RewriterLengths,
+  type RewriterOptions,
+  RewriterTones,
   type SummarizerOptions,
   SummaryFormats,
   SummaryLengths,
@@ -22,6 +26,7 @@ export type Prompt = {
     autoSubmit?: boolean;
     [ApiTypes.LANGUAGE_MODEL]?: LanguageModelOptions;
     [ApiTypes.SUMMARIZER]?: SummarizerOptions;
+    [ApiTypes.REWRITER]?: RewriterOptions;
   };
 };
 
@@ -30,18 +35,29 @@ export function initDefaultPrompts() {
 
   const defaultPrompts: Array<Prompt> = [
     {
+      id: 'correct',
+      name: 'Correct This Text',
+      type: ApiTypes.LANGUAGE_MODEL,
+      prompt: 'Correct this text for grammar and spelling mistakes:\n\n{{selection}}',
+      options: {},
+      conditions: {
+        hasSelection: true,
+      },
+    },
+    {
       id: 'rewrite',
-      name: 'Rewrite This',
+      name: 'Rewrite This Email',
       type: ApiTypes.LANGUAGE_MODEL,
       prompt: 'Rewrite this email in a formal tone:\n\n{{selection}}',
       options: {},
       conditions: {
-        url: 'gmail.google.com',
+        url: 'mail.google.com',
+        hasSelection: true,
       },
     },
     {
       id: 'summarize',
-      name: 'Summarize This',
+      name: 'Summarize This Article',
       type: ApiTypes.SUMMARIZER,
       prompt: 'Summarize this text:\n\n{{selection}}',
       options: {
@@ -57,14 +73,31 @@ export function initDefaultPrompts() {
     },
     {
       id: 'explain',
-      name: 'Explain This',
+      name: 'Explain This Word',
       type: ApiTypes.LANGUAGE_MODEL,
       prompt: 'Explain this word in English:\n\n{{selection}}',
       options: {
         autoSubmit: true,
       },
       conditions: {
-        language: '/^(?!en).*$/', // doesn't start with 'en'
+        language: '/^en/', // starts with 'en'
+        hasSelection: true,
+      },
+    },
+    {
+      id: 'shorten',
+      name: 'Shorten This Tweet ',
+      type: ApiTypes.REWRITER,
+      prompt: 'Shorten this tweet to 300 characters or less:\n\n{{selection}}',
+      options: {
+        rewriter: {
+          tone: RewriterTones.AS_IS,
+          format: RewriterFormats.AS_IS,
+          length: RewriterLengths.SHORTER,
+        },
+      },
+      conditions: {
+        url: '/x\\.com|bsky\\.app/', // Twitter or Bluesky
         hasSelection: true,
       },
     },

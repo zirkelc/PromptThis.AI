@@ -1,5 +1,5 @@
-import { _ as __awaiter, g as getElementById, p as parsePromptMenuItem, s as setValue, a as setEnabled, b as setVisible, c as setEditable, d as getPrompt, e as defaultPrompt, A as ApiTypes, S as SummaryTypes, f as SummaryFormats, h as SummaryLengths, D as DefaultTemperature, i as DefaultTopK, j as getValue, k as scrollDown, l as createSession, m as createStream, n as __asyncValues, o as destroySession } from './context-menu-CXGC9wTg.js';
-import { c as closeSidepanel } from './sidepanel-BzuFFCt1.js';
+import { _ as __awaiter, g as getElementById, p as parsePromptMenuItem, s as setValue, a as setEnabled, b as setVisible, c as setEditable, d as getPrompt, e as defaultPrompt, A as ApiTypes, S as SummaryTypes, f as SummaryFormats, h as SummaryLengths, D as DefaultTemperature, i as DefaultTopK, R as RewriterTones, j as RewriterFormats, k as RewriterLengths, l as getValue, m as scrollDown, n as createSession, o as createStream, q as __asyncValues, r as destroySession } from './context-menu-SSnPgeV4.js';
+import { c as closeSidepanel } from './sidepanel-58eTr2jr.js';
 
 function getDocumentLanguage(tabId) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -73,15 +73,47 @@ function insertText(tabId, text) {
                             error: { code: InsertTextErrors.NO_EDITABLE_ELEMENT, message: 'Active element is not editable' },
                         };
                     }
-                    const start = (_a = activeElement.selectionStart) !== null && _a !== void 0 ? _a : 0;
-                    const end = (_b = activeElement.selectionEnd) !== null && _b !== void 0 ? _b : 0;
-                    const currentValue = activeElement.value || activeElement.textContent || '';
-                    const newValue = currentValue.substring(0, start) + text + currentValue.substring(end);
+                    console.log('activeElement', { activeElement });
                     if (activeElement.isContentEditable) {
-                        activeElement.textContent = newValue;
+                        const selection = window.getSelection();
+                        let range;
+                        if (selection.rangeCount === 0) {
+                            range = document.createRange();
+                            range.selectNodeContents(activeElement);
+                            range.collapse(false);
+                            selection.addRange(range);
+                        }
+                        else {
+                            range = selection.getRangeAt(0);
+                        }
+                        range.deleteContents();
+                        console.log('text', { text });
+                        const fragments = text.split('\n').map((line, index, array) => {
+                            const textNode = document.createTextNode(line);
+                            if (index < array.length - 1) {
+                                const br = document.createElement('br');
+                                const fragment = document.createDocumentFragment();
+                                fragment.appendChild(textNode);
+                                fragment.appendChild(br);
+                                return fragment;
+                            }
+                            return textNode;
+                        });
+                        fragments.forEach((fragment) => {
+                            range.insertNode(fragment);
+                            range.collapse(false);
+                        });
+                        selection.removeAllRanges();
+                        selection.addRange(range);
                     }
                     else {
-                        activeElement.value = newValue;
+                        const input = activeElement;
+                        const start = (_a = input.selectionStart) !== null && _a !== void 0 ? _a : 0;
+                        const end = (_b = input.selectionEnd) !== null && _b !== void 0 ? _b : 0;
+                        const currentValue = input.value;
+                        const newValue = currentValue.substring(0, start) + text + currentValue.substring(end);
+                        input.value = newValue;
+                        input.setSelectionRange(start + text.length, start + text.length);
                     }
                     return { success: true };
                 },
@@ -2659,6 +2691,23 @@ function setMarkdown(element, text) {
     });
 }
 
+function selectText(tabId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log('selectText', { tabId });
+        if (!tabId)
+            return undefined;
+        const [{ result: selectionText }] = yield chrome.scripting.executeScript({
+            target: { tabId },
+            func: () => {
+                const selection = window.getSelection();
+                return selection ? selection.toString().replace(/\n{2}/g, '\n') : '';
+            },
+        });
+        console.log('selectText', { selectionText });
+        return selectionText;
+    });
+}
+
 var _a;
 /**
  * Prompt
@@ -2678,6 +2727,12 @@ const copyBtn = getElementById('copyBtn');
 const cancelBtn = getElementById('cancelBtn');
 const insertBtn = getElementById('insertBtn');
 /**
+ * Language model options
+ */
+const languageModelOptionsElement = getElementById('languageModelOptions');
+const languageModelTopKInput = getElementById('languageModelTopK');
+const languageModelTemperatureInput = getElementById('languageModelTemperature');
+/**
  * Summary options
  */
 const summaryOptionsElement = getElementById('summaryOptions');
@@ -2685,11 +2740,12 @@ const summaryTypeInput = getElementById('summaryType');
 const summaryFormatInput = getElementById('summaryFormat');
 const summaryLengthInput = getElementById('summaryLength');
 /**
- * Language model options
+ * Rewriter options
  */
-const languageModelOptionsElement = getElementById('languageModelOptions');
-const languageModelTopKInput = getElementById('languageModelTopK');
-const languageModelTemperatureInput = getElementById('languageModelTemperature');
+const rewriterOptionsElement = getElementById('rewriterOptions');
+const rewriterToneInput = getElementById('rewriterTone');
+const rewriterFormatInput = getElementById('rewriterFormat');
+const rewriterLengthInput = getElementById('rewriterLength');
 /**
  * Event listeners
  */
@@ -2708,15 +2764,14 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, vo
 const urlParams = new URLSearchParams(window.location.search);
 const promptId = parsePromptMenuItem((_a = urlParams.get('menuItemId')) !== null && _a !== void 0 ? _a : '');
 const tabId = Number(urlParams.get('tabId'));
-const selectionText = urlParams.get('selectionText') || '';
 urlParams.get('editable') === 'true';
 const pageUrl = urlParams.get('pageUrl') || '';
 let currentSession;
 let currentPrompt = undefined;
 function loadPrompt() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('loadPrompt');
+        console.log('loadPrompt', { promptId });
         currentPrompt = promptId ? yield getPrompt(promptId) : defaultPrompt();
         console.log('loadPrompt', { currentPrompt });
         if (!currentPrompt) {
@@ -2727,11 +2782,18 @@ function loadPrompt() {
         setVisible(errorElement, false);
         setValue(nameElement, currentPrompt.name);
         const language = yield getDocumentLanguage(tabId);
+        // The selectionText from the context menu onclickdata collapses newlines to whitespaces
+        // So we try to get the text from the page instead if possible
+        let selectionText = yield selectText(tabId);
+        if (!selectionText) {
+            selectionText = urlParams.get('selectionText') || '';
+        }
         const replacements = {
             '{{selection}}': selectionText || '',
             '{{language}}': language || '',
             '{{url}}': pageUrl || '',
         };
+        console.log('replacements', { replacements });
         let promptText = currentPrompt.prompt;
         for (const [variable, value] of Object.entries(replacements)) {
             promptText = promptText.replaceAll(variable, value);
@@ -2742,6 +2804,7 @@ function loadPrompt() {
         setValue(promptTextInput, promptText);
         setVisible(summaryOptionsElement, currentPrompt.type === ApiTypes.SUMMARIZER);
         setVisible(languageModelOptionsElement, currentPrompt.type === ApiTypes.LANGUAGE_MODEL);
+        setVisible(rewriterOptionsElement, currentPrompt.type === ApiTypes.REWRITER);
         if (currentPrompt.type === ApiTypes.SUMMARIZER) {
             setValue(summaryTypeInput, ((_b = (_a = currentPrompt.options) === null || _a === void 0 ? void 0 : _a.summarizer) === null || _b === void 0 ? void 0 : _b.type) || SummaryTypes.TLDR);
             setValue(summaryFormatInput, ((_d = (_c = currentPrompt.options) === null || _c === void 0 ? void 0 : _c.summarizer) === null || _d === void 0 ? void 0 : _d.format) || SummaryFormats.MARKDOWN);
@@ -2751,8 +2814,13 @@ function loadPrompt() {
             setValue(languageModelTemperatureInput, ((_h = (_g = currentPrompt.options) === null || _g === void 0 ? void 0 : _g.languageModel) === null || _h === void 0 ? void 0 : _h.temperature) || DefaultTemperature);
             setValue(languageModelTopKInput, ((_k = (_j = currentPrompt.options) === null || _j === void 0 ? void 0 : _j.languageModel) === null || _k === void 0 ? void 0 : _k.topK) || DefaultTopK);
         }
+        else if (currentPrompt.type === ApiTypes.REWRITER) {
+            setValue(rewriterToneInput, ((_m = (_l = currentPrompt.options) === null || _l === void 0 ? void 0 : _l.rewriter) === null || _m === void 0 ? void 0 : _m.tone) || RewriterTones.AS_IS);
+            setValue(rewriterFormatInput, ((_p = (_o = currentPrompt.options) === null || _o === void 0 ? void 0 : _o.rewriter) === null || _p === void 0 ? void 0 : _p.format) || RewriterFormats.AS_IS);
+            setValue(rewriterLengthInput, ((_r = (_q = currentPrompt.options) === null || _q === void 0 ? void 0 : _q.rewriter) === null || _r === void 0 ? void 0 : _r.length) || RewriterLengths.AS_IS);
+        }
         setEditable(promptTextInput, true);
-        if ((_l = currentPrompt.options) === null || _l === void 0 ? void 0 : _l.autoSubmit) {
+        if ((_s = currentPrompt.options) === null || _s === void 0 ? void 0 : _s.autoSubmit) {
             yield submitPrompt();
         }
     });
@@ -2792,6 +2860,13 @@ function submitPrompt() {
             options = {
                 temperature: getValue(languageModelTemperatureInput),
                 topK: getValue(languageModelTopKInput),
+            };
+        }
+        else if (currentPrompt.type === ApiTypes.REWRITER) {
+            options = {
+                tone: getValue(rewriterToneInput),
+                format: getValue(rewriterFormatInput),
+                length: getValue(rewriterLengthInput),
             };
         }
         try {
@@ -2866,10 +2941,9 @@ function resetPrompt() {
 function copy() {
     return __awaiter(this, void 0, void 0, function* () {
         yield navigator.clipboard.writeText(getValue(resultElement));
-        const originalText = copyBtn.textContent;
         copyBtn.textContent = 'Copied!';
         setTimeout(() => {
-            copyBtn.textContent = originalText;
+            copyBtn.textContent = 'Copy';
         }, 2000);
     });
 }
@@ -2878,10 +2952,9 @@ function insert() {
         const result = yield insertText(tabId, getValue(resultElement));
         console.log('insertText', { result });
         if (result.success) {
-            const originalText = insertBtn.textContent;
             insertBtn.textContent = 'Inserted!';
             setTimeout(() => {
-                insertBtn.textContent = originalText;
+                insertBtn.textContent = 'Insert';
             }, 2000);
         }
         else {

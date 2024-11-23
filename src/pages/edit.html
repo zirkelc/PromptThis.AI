@@ -37,8 +37,7 @@
 				<select id="type" class="w-full outline-none text-right">
 					<option value="languageModel">Language Model</option>
 					<option value="summarizer">Summarizer</option>
-					<option value="writer" disabled>Writer</option>
-					<option value="rewriter" disabled>Rewriter</option>
+					<option value="rewriter">Rewriter</option>
 				</select>
 			</div>
 
@@ -121,6 +120,43 @@
 					</select>
 				</div>
 				<p class="text-xs text-black/70">The length of the summary to generate.</p>
+			</div>
+		</div>
+
+		<div id="rewriterOptions" class="flex flex-col gap-2" hidden>
+			<div>
+				<div class="flex items-center gap-2">
+					<label for="rewriterTone" class="font-medium text-sm">Tone</label>
+					<select id="rewriterTone" class="p-1 w-full outline-none text-right">
+						<option value="as-is">As Is</option>
+						<option value="more-formal">More Formal</option>
+						<option value="more-casual">More Casual</option>
+					</select>
+				</div>
+				<p class="text-xs text-black/70">The tone of the rewrite.</p>
+			</div>
+			<div>
+				<div class="flex items-center gap-2">
+					<label for="rewriterFormat" class="font-medium text-sm">Format</label>
+					<select id="rewriterFormat" class="p-1 w-full outline-none text-right">
+						<option value="as-is">As Is</option>
+						<option value="plain-text">Plain Text</option>
+						<option value="markdown">Markdown</option>
+					</select>
+				</div>
+				<p class="text-xs text-black/70">The format of the rewrite.</p>
+			</div>
+
+			<div>
+				<div class="flex items-center gap-2">
+					<label for="rewriterLength" class="font-medium text-sm">Length</label>
+					<select id="rewriterLength" class="p-1 w-full outline-none text-right">
+						<option value="as-is">As Is</option>
+						<option value="shorter">Shorter</option>
+						<option value="longer">Longer</option>
+					</select>
+				</div>
+				<p class="text-xs text-black/70">The length of the rewrite.</p>
 			</div>
 		</div>
 

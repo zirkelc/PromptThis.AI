@@ -61,7 +61,7 @@
 		<div
 			class="flex flex-col border border-gray-300 bg-gray-50 gap-4 mb-5 p-3 focus-within:border-black focus-within:bg-white">
 
-			<div id="languageModelOptions" class="flex gap-2" hidden>
+			<div id="languageModelOptions" class="flex gap-1" hidden>
 				<div class="flex items-center gap-2">
 					<div class="flex border">
 						<label for="languageModelTopK" class="px-2 py-1 bg-gray-50 border-r">Top K</label>
@@ -76,7 +76,7 @@
 				</div>
 			</div>
 
-			<div id="summaryOptions" class="flex gap-2" hidden>
+			<div id="summaryOptions" class="flex gap-1" hidden>
 				<select id="summaryType" class="border p-1 accent-black">
 					<option value="tl;dr">TL;DR</option>
 					<option value="key-points">Key Points</option>
@@ -94,6 +94,24 @@
 				</select>
 			</div>
 
+			<div id="rewriterOptions" class="flex gap-1" hidden>
+				<select id="rewriterTone" class="border p-1 accent-black">
+					<option value="as-is">As Is</option>
+					<option value="more-formal">More Formal</option>
+					<option value="more-casual">More Casual</option>
+				</select>
+				<select id="rewriterFormat" class="border p-1 accent-black">
+					<option value="as-is">As Is</option>
+					<option value="plain-text">Plain Text</option>
+					<option value="markdown">Markdown</option>
+				</select>
+				<select id="rewriterLength" class="border p-1 accent-black">
+					<option value="as-is">As Is</option>
+					<option value="shorter">Shorter</option>
+					<option value="longer">Longer</option>
+				</select>
+			</div>
+
 			<span id="prompt"
 				class="block w-full min-h-[1.4em] p-0 border-none bg-transparent font-mono text-sm leading-relaxed whitespace-pre-wrap outline-none"
 				role="textbox" tabindex="0" autofocus contenteditable></span>
@@ -107,7 +125,7 @@
 
 		<div id="result" class="text-sm whitespace-pre-wrap"></div>
 
-		<div id="loading" class="flex items-center gap-1 text-sm">
+		<div id="loading" class="flex items-center gap-1 text-sm" hidden>
 			<span class="loading-braille"></span>
 			<span>Generating</span>
 			<span class="loading-dots"></span>

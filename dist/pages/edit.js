@@ -1,5 +1,5 @@
-import { g as getElementById, q as goto, j as getValue, b as setVisible, s as setValue, _ as __awaiter, A as ApiTypes, d as getPrompt, S as SummaryTypes, f as SummaryFormats, h as SummaryLengths, r as setPrompt, t as requestUpdateContextMenu } from './context-menu-CXGC9wTg.js';
-import { c as closeSidepanel } from './sidepanel-BzuFFCt1.js';
+import { g as getElementById, t as goto, l as getValue, b as setVisible, s as setValue, _ as __awaiter, A as ApiTypes, d as getPrompt, S as SummaryTypes, f as SummaryFormats, h as SummaryLengths, R as RewriterTones, j as RewriterFormats, k as RewriterLengths, u as setPrompt, v as requestUpdateContextMenu } from './context-menu-SSnPgeV4.js';
+import { c as closeSidepanel } from './sidepanel-58eTr2jr.js';
 
 /**
  * Prompt
@@ -41,6 +41,13 @@ const summaryTypeInput = getElementById('summaryType');
 const summaryFormatInput = getElementById('summaryFormat');
 const summaryLengthInput = getElementById('summaryLength');
 /**
+ * Rewriter options
+ */
+const rewriterOptionsElement = getElementById('rewriterOptions');
+const rewriterToneInput = getElementById('rewriterTone');
+const rewriterFormatInput = getElementById('rewriterFormat');
+const rewriterLengthInput = getElementById('rewriterLength');
+/**
  * Event listeners
  */
 saveBtn.addEventListener('click', savePrompt);
@@ -51,6 +58,7 @@ typeInput.addEventListener('change', () => {
     console.log('typeInput.change', { type });
     setVisible(languageModelOptionsElement, type === ApiTypes.LANGUAGE_MODEL);
     setVisible(summaryOptionsElement, type === ApiTypes.SUMMARIZER);
+    setVisible(rewriterOptionsElement, type === ApiTypes.REWRITER);
 });
 languageModelTopKInput.addEventListener('input', () => {
     const value = getValue(languageModelTopKInput);
@@ -76,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, vo
     }
 }));
 function loadPrompt(id) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
     return __awaiter(this, void 0, void 0, function* () {
         const prompt = yield getPrompt(id);
         if (!prompt) {
@@ -100,8 +108,14 @@ function loadPrompt(id) {
             setValue(summaryFormatInput, ((_j = (_h = prompt.options) === null || _h === void 0 ? void 0 : _h.summarizer) === null || _j === void 0 ? void 0 : _j.format) || SummaryFormats.PLAIN_TEXT);
             setValue(summaryLengthInput, ((_l = (_k = prompt.options) === null || _k === void 0 ? void 0 : _k.summarizer) === null || _l === void 0 ? void 0 : _l.length) || SummaryLengths.MEDIUM);
         }
+        else if (prompt.type === ApiTypes.REWRITER) {
+            setValue(rewriterToneInput, ((_o = (_m = prompt.options) === null || _m === void 0 ? void 0 : _m.rewriter) === null || _o === void 0 ? void 0 : _o.tone) || RewriterTones.AS_IS);
+            setValue(rewriterFormatInput, ((_q = (_p = prompt.options) === null || _p === void 0 ? void 0 : _p.rewriter) === null || _q === void 0 ? void 0 : _q.format) || RewriterFormats.PLAIN_TEXT);
+            setValue(rewriterLengthInput, ((_s = (_r = prompt.options) === null || _r === void 0 ? void 0 : _r.rewriter) === null || _s === void 0 ? void 0 : _s.length) || RewriterLengths.AS_IS);
+        }
         setVisible(languageModelOptionsElement, prompt.type === ApiTypes.LANGUAGE_MODEL);
         setVisible(summaryOptionsElement, prompt.type === ApiTypes.SUMMARIZER);
+        setVisible(rewriterOptionsElement, prompt.type === ApiTypes.REWRITER);
     });
 }
 function savePrompt() {
@@ -151,6 +165,13 @@ function savePrompt() {
                 type: getValue(summaryTypeInput),
                 format: getValue(summaryFormatInput),
                 length: getValue(summaryLengthInput),
+            };
+        }
+        else if (type === ApiTypes.REWRITER) {
+            typeOptions = {
+                tone: getValue(rewriterToneInput),
+                format: getValue(rewriterFormatInput),
+                length: getValue(rewriterLengthInput),
             };
         }
         setVisible(errorElement, false);

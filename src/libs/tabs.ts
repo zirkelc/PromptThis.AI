@@ -6,3 +6,8 @@ export async function getActiveTab() {
 
   return tab;
 }
+
+export async function getTab(tabId: number) {
+  const tab = await chrome.tabs.get(tabId);
+  return tab;
+}

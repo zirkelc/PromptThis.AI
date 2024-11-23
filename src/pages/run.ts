@@ -6,6 +6,9 @@ import {
   DefaultTemperature,
   DefaultTopK,
   destroySession,
+  RewriterFormats,
+  RewriterLengths,
+  RewriterTones,
   SummaryFormats,
   SummaryLengths,
   SummaryTypes,
@@ -13,6 +16,7 @@ import {
 } from '../libs/ai.js';
 import { getDocumentLanguage } from '../libs/get-document-language.js';
 import {
+  decodeText,
   getElementById,
   getValue,
   type HTMLInputNumberElement,
@@ -29,6 +33,7 @@ import { defaultPrompt, getPrompt, type Prompt } from '../libs/prompts.js';
 import { closeSidepanel } from '../libs/sidepanel.js';
 import './style.css';
 import { parsePromptMenuItem } from '../libs/context-menu.js';
+import { selectText } from '../libs/select-text.js';
 
 /**
  * Prompt
@@ -50,6 +55,13 @@ const cancelBtn = getElementById<HTMLButtonElement>('cancelBtn');
 const insertBtn = getElementById<HTMLButtonElement>('insertBtn');
 
 /**
+ * Language model options
+ */
+const languageModelOptionsElement = getElementById<HTMLDivElement>('languageModelOptions');
+const languageModelTopKInput = getElementById<HTMLInputTextElement>('languageModelTopK');
+const languageModelTemperatureInput = getElementById<HTMLInputNumberElement>('languageModelTemperature');
+
+/**
  * Summary options
  */
 const summaryOptionsElement = getElementById<HTMLDivElement>('summaryOptions');
@@ -58,11 +70,12 @@ const summaryFormatInput = getElementById<HTMLSelectElement>('summaryFormat');
 const summaryLengthInput = getElementById<HTMLSelectElement>('summaryLength');
 
 /**
- * Language model options
+ * Rewriter options
  */
-const languageModelOptionsElement = getElementById<HTMLDivElement>('languageModelOptions');
-const languageModelTopKInput = getElementById<HTMLInputTextElement>('languageModelTopK');
-const languageModelTemperatureInput = getElementById<HTMLInputNumberElement>('languageModelTemperature');
+const rewriterOptionsElement = getElementById<HTMLDivElement>('rewriterOptions');
+const rewriterToneInput = getElementById<HTMLSelectElement>('rewriterTone');
+const rewriterFormatInput = getElementById<HTMLSelectElement>('rewriterFormat');
+const rewriterLengthInput = getElementById<HTMLSelectElement>('rewriterLength');
 
 /**
  * Event listeners
@@ -84,7 +97,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 const urlParams = new URLSearchParams(window.location.search);
 const promptId = parsePromptMenuItem(urlParams.get('menuItemId') ?? '');
 const tabId = Number(urlParams.get('tabId'));
-const selectionText = urlParams.get('selectionText') || '';
 const editable = urlParams.get('editable') === 'true';
 const pageUrl = urlParams.get('pageUrl') || '';
 
@@ -92,7 +104,7 @@ let currentSession: AISession | undefined;
 let currentPrompt: Prompt | undefined = undefined;
 
 async function loadPrompt() {
-  console.log('loadPrompt');
+  console.log('loadPrompt', { promptId });
 
   currentPrompt = promptId ? await getPrompt(promptId) : defaultPrompt();
   console.log('loadPrompt', { currentPrompt });
@@ -108,11 +120,19 @@ async function loadPrompt() {
 
   const language = await getDocumentLanguage(tabId);
 
+  // The selectionText from the context menu onclickdata collapses newlines to whitespaces
+  // So we try to get the text from the page instead if possible
+  let selectionText = await selectText(tabId);
+  if (!selectionText) {
+    selectionText = urlParams.get('selectionText') || '';
+  }
+
   const replacements = {
     '{{selection}}': selectionText || '',
     '{{language}}': language || '',
     '{{url}}': pageUrl || '',
   };
+  console.log('replacements', { replacements });
 
   let promptText = currentPrompt.prompt;
 
@@ -127,7 +147,7 @@ async function loadPrompt() {
   setValue(promptTextInput, promptText);
   setVisible(summaryOptionsElement, currentPrompt.type === ApiTypes.SUMMARIZER);
   setVisible(languageModelOptionsElement, currentPrompt.type === ApiTypes.LANGUAGE_MODEL);
-
+  setVisible(rewriterOptionsElement, currentPrompt.type === ApiTypes.REWRITER);
   if (currentPrompt.type === ApiTypes.SUMMARIZER) {
     setValue(summaryTypeInput, currentPrompt.options?.summarizer?.type || SummaryTypes.TLDR);
     setValue(summaryFormatInput, currentPrompt.options?.summarizer?.format || SummaryFormats.MARKDOWN);
@@ -135,6 +155,10 @@ async function loadPrompt() {
   } else if (currentPrompt.type === ApiTypes.LANGUAGE_MODEL) {
     setValue(languageModelTemperatureInput, currentPrompt.options?.languageModel?.temperature || DefaultTemperature);
     setValue(languageModelTopKInput, currentPrompt.options?.languageModel?.topK || DefaultTopK);
+  } else if (currentPrompt.type === ApiTypes.REWRITER) {
+    setValue(rewriterToneInput, currentPrompt.options?.rewriter?.tone || RewriterTones.AS_IS);
+    setValue(rewriterFormatInput, currentPrompt.options?.rewriter?.format || RewriterFormats.AS_IS);
+    setValue(rewriterLengthInput, currentPrompt.options?.rewriter?.length || RewriterLengths.AS_IS);
   }
 
   setEditable(promptTextInput, true);
@@ -180,6 +204,12 @@ async function submitPrompt() {
     options = {
       temperature: getValue(languageModelTemperatureInput),
       topK: getValue(languageModelTopKInput),
+    };
+  } else if (currentPrompt.type === ApiTypes.REWRITER) {
+    options = {
+      tone: getValue(rewriterToneInput),
+      format: getValue(rewriterFormatInput),
+      length: getValue(rewriterLengthInput),
     };
   }
 
@@ -248,10 +278,9 @@ function resetPrompt() {
 async function copy() {
   await navigator.clipboard.writeText(getValue(resultElement));
 
-  const originalText = copyBtn.textContent;
   copyBtn.textContent = 'Copied!';
   setTimeout(() => {
-    copyBtn.textContent = originalText;
+    copyBtn.textContent = 'Copy';
   }, 2000);
 }
 
@@ -260,10 +289,9 @@ async function insert() {
   console.log('insertText', { result });
 
   if (result.success) {
-    const originalText = insertBtn.textContent;
     insertBtn.textContent = 'Inserted!';
     setTimeout(() => {
-      insertBtn.textContent = originalText;
+      insertBtn.textContent = 'Insert';
     }, 2000);
   } else {
     alert(result.error.message);

@@ -72,23 +72,49 @@ const SummaryLengths = {
     MEDIUM: 'medium',
     LONG: 'long',
 };
+const RewriterTones = {
+    AS_IS: 'as-is',
+    MORE_FORMAL: 'more-formal',
+    MORE_CASUAL: 'more-casual',
+};
+const RewriterFormats = {
+    AS_IS: 'as-is',
+    MARKDOWN: 'markdown',
+    PLAIN_TEXT: 'plain-text',
+};
+const RewriterLengths = {
+    AS_IS: 'as-is',
+    SHORTER: 'shorter',
+    LONGER: 'longer',
+};
 
 function initDefaultPrompts() {
     console.log('initDefaultPrompts');
     const defaultPrompts = [
         {
+            id: 'correct',
+            name: 'Correct This Text',
+            type: ApiTypes.LANGUAGE_MODEL,
+            prompt: 'Correct this text for grammar and spelling mistakes:\n\n{{selection}}',
+            options: {},
+            conditions: {
+                hasSelection: true,
+            },
+        },
+        {
             id: 'rewrite',
-            name: 'Rewrite This',
+            name: 'Rewrite This Email',
             type: ApiTypes.LANGUAGE_MODEL,
             prompt: 'Rewrite this email in a formal tone:\n\n{{selection}}',
             options: {},
             conditions: {
-                url: 'gmail.google.com',
+                url: 'mail.google.com',
+                hasSelection: true,
             },
         },
         {
             id: 'summarize',
-            name: 'Summarize This',
+            name: 'Summarize This Article',
             type: ApiTypes.SUMMARIZER,
             prompt: 'Summarize this text:\n\n{{selection}}',
             options: {
@@ -104,14 +130,31 @@ function initDefaultPrompts() {
         },
         {
             id: 'explain',
-            name: 'Explain This',
+            name: 'Explain This Word',
             type: ApiTypes.LANGUAGE_MODEL,
             prompt: 'Explain this word in English:\n\n{{selection}}',
             options: {
                 autoSubmit: true,
             },
             conditions: {
-                language: '/^(?!en).*$/',
+                language: '/^en/',
+                hasSelection: true,
+            },
+        },
+        {
+            id: 'shorten',
+            name: 'Shorten This Tweet ',
+            type: ApiTypes.REWRITER,
+            prompt: 'Shorten this tweet to 300 characters or less:\n\n{{selection}}',
+            options: {
+                rewriter: {
+                    tone: RewriterTones.AS_IS,
+                    format: RewriterFormats.AS_IS,
+                    length: RewriterLengths.SHORTER,
+                },
+            },
+            conditions: {
+                url: '/x\\.com|bsky\\.app/',
                 hasSelection: true,
             },
         },
@@ -250,6 +293,12 @@ function getActiveTab() {
         return tab;
     });
 }
+function getTab(tabId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const tab = yield chrome.tabs.get(tabId);
+        return tab;
+    });
+}
 
 /**
  * Open settings page when extension icon is clicked.
@@ -292,11 +341,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => __awaite
     }
 }));
 /**
+ * Update context menus when a tab is activated.
+ */
+chrome.tabs.onActivated.addListener((activeInfo) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('tabs.onActivated', { activeInfo });
+    const tab = yield getTab(activeInfo.tabId);
+    yield updateContextMenu(tab);
+}));
+/**
  * Update context menus when a tab is updated.
  */
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('tabs.onUpdated', { tabId, changeInfo, tab });
     if (changeInfo.status === 'complete') {
-        console.log('tabs.onUpdated', { tabId, changeInfo, tab });
         yield updateContextMenu(tab);
     }
 }));

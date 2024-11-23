@@ -75,15 +75,52 @@ export async function insertText(tabId: number | undefined, text: string): Promi
           } as const;
         }
 
-        const start = (activeElement as HTMLInputElement).selectionStart ?? 0;
-        const end = (activeElement as HTMLInputElement).selectionEnd ?? 0;
-        const currentValue = (activeElement as HTMLInputElement).value || activeElement.textContent || '';
-        const newValue = currentValue.substring(0, start) + text + currentValue.substring(end);
+        console.log('activeElement', { activeElement });
 
         if (activeElement.isContentEditable) {
-          activeElement.textContent = newValue;
+          const selection = window.getSelection()!;
+          let range: Range;
+
+          if (selection.rangeCount === 0) {
+            range = document.createRange();
+            range.selectNodeContents(activeElement);
+            range.collapse(false);
+            selection.addRange(range);
+          } else {
+            range = selection.getRangeAt(0);
+          }
+
+          range.deleteContents();
+          console.log('text', { text });
+          const fragments = text.split('\n').map((line, index, array) => {
+            const textNode = document.createTextNode(line);
+
+            if (index < array.length - 1) {
+              const br = document.createElement('br');
+              const fragment = document.createDocumentFragment();
+              fragment.appendChild(textNode);
+              fragment.appendChild(br);
+              return fragment;
+            }
+
+            return textNode;
+          });
+
+          fragments.forEach((fragment) => {
+            range.insertNode(fragment);
+            range.collapse(false);
+          });
+
+          selection.removeAllRanges();
+          selection.addRange(range);
         } else {
-          (activeElement as HTMLInputElement).value = newValue;
+          const input = activeElement as HTMLInputElement;
+          const start = input.selectionStart ?? 0;
+          const end = input.selectionEnd ?? 0;
+          const currentValue = input.value;
+          const newValue = currentValue.substring(0, start) + text + currentValue.substring(end);
+          input.value = newValue;
+          input.setSelectionRange(start + text.length, start + text.length);
         }
 
         return { success: true } as const;

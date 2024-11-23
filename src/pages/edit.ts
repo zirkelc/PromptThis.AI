@@ -1,4 +1,13 @@
-import { type ApiType, ApiTypes, SummaryFormats, SummaryLengths, SummaryTypes } from '../libs/ai.js';
+import {
+  type ApiType,
+  ApiTypes,
+  RewriterFormats,
+  RewriterLengths,
+  RewriterTones,
+  SummaryFormats,
+  SummaryLengths,
+  SummaryTypes,
+} from '../libs/ai.js';
 import { requestUpdateContextMenu } from '../libs/context-menu.js';
 import {
   getElementById,
@@ -59,6 +68,14 @@ const summaryFormatInput = getElementById<HTMLSelectElement>('summaryFormat');
 const summaryLengthInput = getElementById<HTMLSelectElement>('summaryLength');
 
 /**
+ * Rewriter options
+ */
+const rewriterOptionsElement = getElementById<HTMLDivElement>('rewriterOptions');
+const rewriterToneInput = getElementById<HTMLSelectElement>('rewriterTone');
+const rewriterFormatInput = getElementById<HTMLSelectElement>('rewriterFormat');
+const rewriterLengthInput = getElementById<HTMLSelectElement>('rewriterLength');
+
+/**
  * Event listeners
  */
 saveBtn.addEventListener('click', savePrompt);
@@ -71,6 +88,7 @@ typeInput.addEventListener('change', () => {
 
   setVisible(languageModelOptionsElement, type === ApiTypes.LANGUAGE_MODEL);
   setVisible(summaryOptionsElement, type === ApiTypes.SUMMARIZER);
+  setVisible(rewriterOptionsElement, type === ApiTypes.REWRITER);
 });
 
 languageModelTopKInput.addEventListener('input', () => {
@@ -123,10 +141,15 @@ async function loadPrompt(id: string) {
     setValue(summaryTypeInput, prompt.options?.summarizer?.type || SummaryTypes.TLDR);
     setValue(summaryFormatInput, prompt.options?.summarizer?.format || SummaryFormats.PLAIN_TEXT);
     setValue(summaryLengthInput, prompt.options?.summarizer?.length || SummaryLengths.MEDIUM);
+  } else if (prompt.type === ApiTypes.REWRITER) {
+    setValue(rewriterToneInput, prompt.options?.rewriter?.tone || RewriterTones.AS_IS);
+    setValue(rewriterFormatInput, prompt.options?.rewriter?.format || RewriterFormats.PLAIN_TEXT);
+    setValue(rewriterLengthInput, prompt.options?.rewriter?.length || RewriterLengths.AS_IS);
   }
 
   setVisible(languageModelOptionsElement, prompt.type === ApiTypes.LANGUAGE_MODEL);
   setVisible(summaryOptionsElement, prompt.type === ApiTypes.SUMMARIZER);
+  setVisible(rewriterOptionsElement, prompt.type === ApiTypes.REWRITER);
 }
 
 async function savePrompt() {
@@ -182,6 +205,12 @@ async function savePrompt() {
       type: getValue(summaryTypeInput),
       format: getValue(summaryFormatInput),
       length: getValue(summaryLengthInput),
+    };
+  } else if (type === ApiTypes.REWRITER) {
+    typeOptions = {
+      tone: getValue(rewriterToneInput),
+      format: getValue(rewriterFormatInput),
+      length: getValue(rewriterLengthInput),
     };
   }
 
