@@ -136,11 +136,7 @@ For quick one-off tasks, the `Prompt This` context menu option is always availab
 While the current version of PromptThis.AI already supports a lot of use cases, there are still many ideas on how to improve it even more.
 Here are some of my favorite ideas:
 
-**Translation**
-
-Integrating the Translator API to allow for instant translations of selected text with a shortcut like `Ctrl+C+C`.
-
-**Conditions**
+### Conditions
 
 Add more conditions to control when an AI task should appear in the context menu:
 - `IsEditable` to check if the right-clicked element is an editable text input
@@ -148,24 +144,27 @@ Add more conditions to control when an AI task should appear in the context menu
 - `CssSelector` to check if the right-clicked element matches a CSS selector
 - `HasMetaTag` to check if page has a meta tag with a given name and value
 
-**Variables**
+### Variables
 
 Add more variables for dynamic prompts:
 - `Cursor` to control where the cursor is placed inside the prompt input when it is opened
 - `TextContent` or `HtmlContent` to insert the text or html content of the right-clicked element
 
-**Options**
+### Options
 
 Add more options to control the behavior of an AI task when it is opened or executed:
 - `AutoSelect` to automatically select the content of the right-clicked element
 - `AutoInsert` to insert the generated text right back into the right-clicked element of the page
 - `AutoCopy` to copy the generated text into the clipboard
 
-**Complex Use Cases**
+### Complex Use Cases
 
-Lets says I want to an AI task to proof-read any text I type in a textarea. 
-I don't want to have to select the text first, just right-click on the textarea and click on the AI task.
-I could use a `CssSelector` like `textarea:read-write` to enable the task on all textareas on every page and use the `TextContent` variable to insert the text of the textarea into the prompt. The options could be set to `AutoSubmit` and `AutoInsert` to make it as seamless as possible. A right-click on the textarea would then proof-read it and insert the result right back into the textarea.
+Lets says I want an AI task to proof-read any text I type in a textarea. 
+I don't want to have to select the text first, I just want to right-click on the textarea and select the AI task from the context menu.
+To enable this on every webpage, I could use a `CssSelector` like `textarea:read-write` to show the task only editable textareas. 
+Then I could use the `AutoSelect` option to automatically select the text of the textarea to insert it into the prompt. 
+The `AutoSubmit` options would make sure the prompt is submitted automatically and the `AutoInsert` option would insert the result right back into the textarea where I right-clicked.
+That means I can proof-ready any text in only two clicks.
 
 ## License
 MIT
