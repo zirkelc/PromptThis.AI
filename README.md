@@ -29,43 +29,45 @@ PromptThis.AI seamlessly integrates AI capabilities directly into your browser's
 2. Select a task from the context menu
 3. The prompt appears in a side panel with your selected text automatically inserted
 4. Edit the prompt if needed and submit
-5. Copy or directly insert the AI-generated result into your work
+5. Copy or directly insert the AI-generated result backinto your work
 
 ### Examples
 Here are some practical use cases for AI tasks:
 
 **Correct This Text**: Quickly correct any selected text, available on any webpage.
 - Name: Correct This Text
-- Prompt: Correct this text for grammar and spelling mistakes: {{selection}}
+- Prompt: Correct this text for grammar and spelling mistakes: `{{selection}}`
 
 **Rewrite This Email**: Write an email in your own words and make it more formal before sending, available _only on Gmail_.
 - Name: Rewrite This Email
-- Prompt: Rewrite this email to be more formal: {{selection}}
+- Prompt: Rewrite this email to be more formal: `{{selection}}`
+- Options:
+  - RewriterTone: `More Formal`
 - Conditions: 
   - URL *contains* `mail.google.com`
   - HasSelection *is* `true`
 
 **Summarize This Article**: Turn any text into bullet points, available on any webpage.
 - Name: Summarize This Article
-- Prompt: Summarize this text in bullet points: {{selection}}
+- Prompt: Summarize this text in bullet points: `{{selection}}`
 - Options:
-  - Type: `Key Points`
-  - Length: `Short`
+  - SummaryType: `Key Points`
+  - SummaryLength: `Short`
 - Conditions:
   - HasSelection *is* `true`
 
 **Explain This Word**: Explain any unknown word, available _only on English pages_.
 - Name: Explain This Word
-- Prompt: Explain this word or phrase: {{selection}}
+- Prompt: Explain this word or phrase in English: `{{selection}}`
 - Conditions: 
   - Language *matches* `/^en/`
   - HasSelection *is* `true`
 
 **Shorten This Tweet**: Shorten your tweet to 300 characters or less, available _only on Twitter/X and Bluesky_.
 - Name: Shorten This Tweet
-- Prompt: Shorten this tweet to 300 characters or less: {{selection}}
+- Prompt: Shorten this tweet to 300 characters or less: `{{selection}}`
 - Conditions:
-  - URL *matches* `/twitter\.com|x\.com|bsky\.app/`
+  - URL *matches* `/x\.com|bsky\.app/`
   - HasSelection *is* `true`
 
 ## [AI APIs](https://developer.chrome.com/docs/ai/built-in-apis)
@@ -133,38 +135,37 @@ For quick one-off tasks, the `Prompt This` context menu option is always availab
 
 ## Ideas For the Future
 
-While the current version of PromptThis.AI already supports a lot of use cases, there are still many ideas on how to improve it even more.
-Here are some of my favorite ideas:
+While the current version already supports many use cases through customizations (conditions, options, variables), I have lots of ideas for making it even more powerful. Here are my ideas for new features:
 
 ### Conditions
-
-Add more conditions to control when an AI task should appear in the context menu:
+Conditions will control when a task appears in the context menu on a right-clicked element:
 - `IsEditable` to check if the right-clicked element is an editable text input
 - `IsImage` to check if the right-clicked element is an image
 - `CssSelector` to check if the right-clicked element matches a CSS selector
 - `HasMetaTag` to check if page has a meta tag with a given name and value
 
-### Variables
-
-Add more variables for dynamic prompts:
-- `Cursor` to control where the cursor is placed inside the prompt input when it is opened
-- `TextContent` or `HtmlContent` to insert the text or html content of the right-clicked element
-
 ### Options
-
-Add more options to control the behavior of an AI task when it is opened or executed:
+Options will control the behavior of a task when it is opened or executed:
 - `AutoSelect` to automatically select the content of the right-clicked element
-- `AutoInsert` to insert the generated text right back into the right-clicked element of the page
+- `AutoInsert` to insert the generated text right back into the right-clicked element
 - `AutoCopy` to copy the generated text into the clipboard
 
-### Complex Use Cases
+### Variables
+Variables will make prompts even more dynamic:
+- `Cursor` to control where the cursor is placed inside the prompt input when opened
+- `TextContent` or `HtmlContent` to insert the text or html content of the right-clicked element
 
-Lets says I want an AI task to proof-read any text I type in a textarea. 
-I don't want to have to select the text first, I just want to right-click on the textarea and select the AI task from the context menu.
-To enable this on every webpage, I could use a `CssSelector` like `textarea:read-write` to show the task only editable textareas. 
-Then I could use the `AutoSelect` option to automatically select the text of the textarea to insert it into the prompt. 
-The `AutoSubmit` options would make sure the prompt is submitted automatically and the `AutoInsert` option would insert the result right back into the textarea where I right-clicked.
-That means I can proof-ready any text in only two clicks.
+### Example: 2-Click Proofreading
+Here's how these features could work together in a real-world scenario:
+> Imagine proofreading any text you type in a textarea on any site, without having to select, copy, or paste anything.
+
+Using the new features, it could be implemented like this:
+1. `CssSelector` condition like `textarea:read-write` to show the task only on editable textareas
+2. `AutoSelect` option to automatically grab the textarea's content without having to select it
+3. `AutoSubmit` option to execute the task immediately
+4. `AutoInsert` option to put the corrected text right back where you started
+
+The result? Proofreading any text with just two clicks: right-click and select the task.
 
 ## License
 MIT
