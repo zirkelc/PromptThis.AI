@@ -1,5 +1,5 @@
 import { getDocumentLanguage } from './get-document-language';
-import { getPrompts, type Prompt } from './prompts';
+import { type Prompt, getPrompts } from './prompts';
 
 export const MenuItemIds = {
   ROOT: '/',

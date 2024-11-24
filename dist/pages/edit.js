@@ -1,5 +1,5 @@
-import { g as getElementById, t as goto, l as getValue, b as setVisible, s as setValue, _ as __awaiter, A as ApiTypes, d as getPrompt, S as SummaryTypes, f as SummaryFormats, h as SummaryLengths, R as RewriterTones, j as RewriterFormats, k as RewriterLengths, u as setPrompt, v as requestUpdateContextMenu } from './html-utils-K7qxwLe8.js';
-import { c as closeSidepanel } from './sidepanel-Cr_aXRcO.js';
+import { g as getElementById, t as goto, l as getValue, b as setVisible, s as setValue, _ as __awaiter, A as ApiTypes, d as getPrompt, S as SummaryTypes, f as SummaryFormats, h as SummaryLengths, R as RewriterTones, j as RewriterFormats, k as RewriterLengths, u as setPrompt, v as requestUpdateContextMenu } from './html-utils-CEkPgNco.js';
+import { c as closeSidepanel } from './sidepanel-DzBcXW54.js';
 
 /**
  * Prompt

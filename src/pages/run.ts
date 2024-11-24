@@ -1,21 +1,23 @@
 import {
+  type AISession,
   ApiTypes,
-  createSession,
-  createStream,
   DefaultTemperature,
   DefaultTopK,
-  destroySession,
   RewriterFormats,
   RewriterLengths,
   RewriterTones,
   SummaryFormats,
   SummaryLengths,
   SummaryTypes,
-  type AISession,
+  createSession,
+  createStream,
+  destroySession,
 } from '../libs/ai.js';
 import { parsePromptMenuItem } from '../libs/context-menu.js';
 import { getDocumentLanguage } from '../libs/get-document-language.js';
 import {
+  type HTMLInputNumberElement,
+  type HTMLInputTextElement,
   getElementById,
   getValue,
   scrollDown,
@@ -23,12 +25,10 @@ import {
   setEnabled,
   setValue,
   setVisible,
-  type HTMLInputNumberElement,
-  type HTMLInputTextElement,
 } from '../libs/html-utils.js';
 import { insertText } from '../libs/insert-text.js';
 import { setMarkdown } from '../libs/markdown.js';
-import { defaultPrompt, getPrompt, type Prompt } from '../libs/prompts.js';
+import { type Prompt, defaultPrompt, getPrompt } from '../libs/prompts.js';
 import { selectText } from '../libs/select-text.js';
 import { closeSidepanel } from '../libs/sidepanel.js';
 import './style.css';

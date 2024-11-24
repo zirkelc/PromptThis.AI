@@ -1,4 +1,4 @@
-import { updateContextMenu, MenuItemIds } from './libs/context-menu.js';
+import { MenuItemIds, updateContextMenu } from './libs/context-menu.js';
 import { encodeText } from './libs/html-utils.js';
 import { initDefaultPrompts } from './libs/prompts.js';
 import { openSidePanel, resetSidepanel } from './libs/sidepanel.js';

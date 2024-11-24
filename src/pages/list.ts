@@ -1,8 +1,8 @@
 import './style.css';
-import { getElementById, goto } from '../libs/html-utils.js';
 import { requestUpdateContextMenu } from '../libs/context-menu.js';
-import { getActiveTab } from '../libs/tabs.js';
+import { getElementById, goto } from '../libs/html-utils.js';
 import { getPrompts, unsetPrompt } from '../libs/prompts.js';
+import { getActiveTab } from '../libs/tabs.js';
 
 /**
  * Elements

@@ -10,12 +10,12 @@ import {
 } from '../libs/ai.js';
 import { requestUpdateContextMenu } from '../libs/context-menu.js';
 import {
-  getElementById,
-  getValue,
-  goto,
   type HTMLInputCheckboxElement,
   type HTMLInputNumberElement,
   type HTMLInputTextElement,
+  getElementById,
+  getValue,
+  goto,
   setValue,
   setVisible,
 } from '../libs/html-utils.js';

@@ -1,5 +1,5 @@
-import { _ as __awaiter, g as getElementById, p as parsePromptMenuItem, s as setValue, a as setEnabled, b as setVisible, c as setEditable, d as getPrompt, e as defaultPrompt, A as ApiTypes, S as SummaryTypes, f as SummaryFormats, h as SummaryLengths, D as DefaultTemperature, i as DefaultTopK, R as RewriterTones, j as RewriterFormats, k as RewriterLengths, l as getValue, m as scrollDown, n as createSession, o as createStream, q as __asyncValues, r as destroySession } from './html-utils-K7qxwLe8.js';
-import { c as closeSidepanel } from './sidepanel-Cr_aXRcO.js';
+import { _ as __awaiter, g as getElementById, p as parsePromptMenuItem, s as setValue, a as setEnabled, b as setVisible, c as setEditable, d as getPrompt, e as defaultPrompt, A as ApiTypes, S as SummaryTypes, f as SummaryFormats, h as SummaryLengths, D as DefaultTemperature, i as DefaultTopK, R as RewriterTones, j as RewriterFormats, k as RewriterLengths, l as getValue, m as scrollDown, n as createSession, o as createStream, q as __asyncValues, r as destroySession } from './html-utils-CEkPgNco.js';
+import { c as closeSidepanel } from './sidepanel-DzBcXW54.js';
 
 function getDocumentLanguage(tabId) {
     return __awaiter(this, void 0, void 0, function* () {
