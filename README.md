@@ -7,6 +7,8 @@
 ## About
 A Chrome extension created for the [Google Chrome Built-in AI Challenge](https://googlechromeai.devpost.com/) that seamlessly integrates AI capabilities into your browsing experience.
 
+https://github.com/user-attachments/assets/a6df785a-d1cd-4da5-9dd4-c5554348c8b7
+
 ## Problem
 In today's digital landscape, AI tools have become essential for many tasks, but their integration into our daily workflow remains fragmented and inefficient. Users frequently find themselves:
 
