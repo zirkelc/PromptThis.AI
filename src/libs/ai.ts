@@ -133,7 +133,7 @@ export async function createSession(type: ApiType, options: AICreateOptions = {}
   if (type === ApiTypes.REWRITER) {
     // Bug: Writer and Rewriter APIs depend on `sharedContext` to be filled
     // https://issues.chromium.org/u/1/issues/380058928?pli=1
-    (options as AIRewriterCreateOptions).sharedContext = `email to hannah`; // dummy value
+    (options as AIRewriterCreateOptions).sharedContext = `rewrite this`; // dummy value
   }
 
   console.log('createSession', { options });

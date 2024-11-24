@@ -1,9 +1,9 @@
-import { _ as __awaiter, g as getElementById, p as parsePromptMenuItem, s as setValue, a as setEnabled, b as setVisible, c as setEditable, d as getPrompt, e as defaultPrompt, A as ApiTypes, S as SummaryTypes, f as SummaryFormats, h as SummaryLengths, D as DefaultTemperature, i as DefaultTopK, R as RewriterTones, j as RewriterFormats, k as RewriterLengths, l as getValue, m as scrollDown, n as createSession, o as createStream, q as __asyncValues, r as destroySession } from './context-menu-SSnPgeV4.js';
-import { c as closeSidepanel } from './sidepanel-58eTr2jr.js';
+import { _ as __awaiter, g as getElementById, p as parsePromptMenuItem, s as setValue, a as setEnabled, b as setVisible, c as setEditable, d as getPrompt, e as defaultPrompt, A as ApiTypes, S as SummaryTypes, f as SummaryFormats, h as SummaryLengths, D as DefaultTemperature, i as DefaultTopK, R as RewriterTones, j as RewriterFormats, k as RewriterLengths, l as getValue, m as scrollDown, n as createSession, o as createStream, q as __asyncValues, r as destroySession } from './html-utils-K7qxwLe8.js';
+import { c as closeSidepanel } from './sidepanel-Cr_aXRcO.js';
 
 function getDocumentLanguage(tabId) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("getDocumentLanguage", { tabId });
+        console.log('getDocumentLanguage', { tabId });
         if (!tabId)
             return undefined;
         const [{ result }] = yield chrome.scripting.executeScript({
@@ -11,13 +11,12 @@ function getDocumentLanguage(tabId) {
             func: () => {
                 var _a, _b;
                 return (document.documentElement.lang ||
-                    ((_a = document
-                        .querySelector('meta[property="og:locale"]')) === null || _a === void 0 ? void 0 : _a.getAttribute("content")) ||
-                    ((_b = document.querySelector("html")) === null || _b === void 0 ? void 0 : _b.getAttribute("lang")) ||
+                    ((_a = document.querySelector('meta[property="og:locale"]')) === null || _a === void 0 ? void 0 : _a.getAttribute('content')) ||
+                    ((_b = document.querySelector('html')) === null || _b === void 0 ? void 0 : _b.getAttribute('lang')) ||
                     navigator.language);
             },
         });
-        console.log("getDocumentLanguage:result", { result });
+        console.log('getDocumentLanguage', { result });
         return result;
     });
 }
@@ -87,7 +86,6 @@ function insertText(tabId, text) {
                             range = selection.getRangeAt(0);
                         }
                         range.deleteContents();
-                        console.log('text', { text });
                         const fragments = text.split('\n').map((line, index, array) => {
                             const textNode = document.createTextNode(line);
                             if (index < array.length - 1) {
@@ -123,7 +121,7 @@ function insertText(tabId, text) {
                 return result;
         }
         catch (error) {
-            console.error('insertText', { error });
+            console.error('Error inserting text', { error });
         }
         return {
             success: false,
@@ -2703,7 +2701,6 @@ function selectText(tabId) {
                 return selection ? selection.toString().replace(/\n{2}/g, '\n') : '';
             },
         });
-        console.log('selectText', { selectionText });
         return selectionText;
     });
 }
@@ -2793,11 +2790,11 @@ function loadPrompt() {
             '{{language}}': language || '',
             '{{url}}': pageUrl || '',
         };
-        console.log('replacements', { replacements });
         let promptText = currentPrompt.prompt;
         for (const [variable, value] of Object.entries(replacements)) {
             promptText = promptText.replaceAll(variable, value);
         }
+        // If the prompt doesn't contain the {{selection}} variable, append the selectionText to the end of the prompt
         if (!currentPrompt.prompt.includes('{{selection}}') && selectionText) {
             promptText = `${promptText}\n\n${selectionText}`;
         }
@@ -2902,7 +2899,7 @@ function submitPrompt() {
         }
         catch (e) {
             const error = e;
-            console.error('Error', { error });
+            console.error('Error submitting prompt', { error });
             setValue(resultElement, `Error: ${(_d = error === null || error === void 0 ? void 0 : error.message) !== null && _d !== void 0 ? _d : 'Unknown error'}`);
         }
         finally {

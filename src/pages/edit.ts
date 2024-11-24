@@ -84,7 +84,6 @@ closeBtn.addEventListener('click', closeSidepanel);
 
 typeInput.addEventListener('change', () => {
   const type = getValue(typeInput);
-  console.log('typeInput.change', { type });
 
   setVisible(languageModelOptionsElement, type === ApiTypes.LANGUAGE_MODEL);
   setVisible(summaryOptionsElement, type === ApiTypes.SUMMARIZER);

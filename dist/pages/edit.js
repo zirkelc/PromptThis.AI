@@ -1,5 +1,5 @@
-import { g as getElementById, t as goto, l as getValue, b as setVisible, s as setValue, _ as __awaiter, A as ApiTypes, d as getPrompt, S as SummaryTypes, f as SummaryFormats, h as SummaryLengths, R as RewriterTones, j as RewriterFormats, k as RewriterLengths, u as setPrompt, v as requestUpdateContextMenu } from './context-menu-SSnPgeV4.js';
-import { c as closeSidepanel } from './sidepanel-58eTr2jr.js';
+import { g as getElementById, t as goto, l as getValue, b as setVisible, s as setValue, _ as __awaiter, A as ApiTypes, d as getPrompt, S as SummaryTypes, f as SummaryFormats, h as SummaryLengths, R as RewriterTones, j as RewriterFormats, k as RewriterLengths, u as setPrompt, v as requestUpdateContextMenu } from './html-utils-K7qxwLe8.js';
+import { c as closeSidepanel } from './sidepanel-Cr_aXRcO.js';
 
 /**
  * Prompt
@@ -55,7 +55,6 @@ cancelBtn.addEventListener('click', () => goto('list.html'));
 closeBtn.addEventListener('click', closeSidepanel);
 typeInput.addEventListener('change', () => {
     const type = getValue(typeInput);
-    console.log('typeInput.change', { type });
     setVisible(languageModelOptionsElement, type === ApiTypes.LANGUAGE_MODEL);
     setVisible(summaryOptionsElement, type === ApiTypes.SUMMARIZER);
     setVisible(rewriterOptionsElement, type === ApiTypes.REWRITER);

@@ -76,35 +76,35 @@ Here are some practical use cases for AI tasks:
 The extensions currently uses [Prompt API](https://github.com/explainers-by-googlers/prompt-api/) (`type: languageModel`), the [Summarizer API](https://github.com/WICG/writing-assistance-apis) (`type: summarizer`), and the [Rewriter API](https://github.com/WICG/writing-assistance-apis) (`type: rewriter`). 
 
 ## Configuration
-Each prompt has the following mandatory fields:
+Each task has the following mandatory fields:
 
 | Field | Description | Type | Default |
 | ----- | ----------- | ------- | ------- |
-| `Name` | The name of the prompt which appears in the context menu | `string` | - |
+| `Name` | The name of the task which appears in the context menu | `string` | - |
 | `Prompt` | The prompt text with placeholder variables | `string` | - |
-| `Type` | The type of the prompt which determines which AI API to use | `languageModel \| summarizer \| rewriter` | `languageModel` |
+| `Type` | The type of the task which determines which AI API to use | `languageModel \| summarizer \| rewriter` | `languageModel` |
 
 
 ### Conditions
-Conditions control when a prompt should be shown in the context menu. 
-They are optional and if no conditions are provided, the prompt will be shown in the context menu on all pages.
-If multiple conditions are provided, the prompt will be shown only if all conditions are met.
+Conditions control when a task should be shown in the context menu. 
+They are optional and if no conditions are provided, the task will be shown in the context menu on all pages.
+If multiple conditions are provided, the task will be shown only if all conditions are met.
 
 The following conditions are available:
 
 | Field | Description | Type | Default |
 | ----- | ----------- | ------- | ------- |
-| `URL` | The prompt should only be shown on specific URLs | `string \| Regex` | - |
-| `Language` | The prompt should only be shown on specific languages | `string \| Regex` | - |
-| `HasSelection` | The prompt should only be shown if there is a text selection on the page | `boolean` | `false` |
+| `URL` | The task should only be shown on specific URLs | `string \| Regex` | - |
+| `Language` | The task should only be shown on specific languages | `string \| Regex` | - |
+| `HasSelection` | The task should only be shown if there is a text selection on the page | `boolean` | `false` |
 
 ### Options
-Options control the behavior of the prompt when it is opened in the sidepanel.
+Options control the behavior of the task when it is selected or executed.
 
 The following options are available:
 | Field | Description | Type | Default |
 | ----- | ----------- | ------- | ------- |
-| `AutoSubmit` | Whether the prompt should be submitted automatically when it is selected from the context menu | `boolean` | `false` |
+| `AutoSubmit` | Whether the task should be submitted automatically when it is selected from the context menu | `boolean` | `false` |
 | `LanguageModelTemperature` | Temperature of the language model, if `type` is `languageModel` | `number` | `0.7` |
 | `LanguageModelTopK` | Top-k of the language model, if `type` is `languageModel` | `number` | `8` |
 | `SummaryType` | Type of the summary, if `type` is `summarizer` | `Key Points \| Teaser \| Headline \| TL;DR` | `Key Points` |
@@ -131,37 +131,35 @@ The extension is currently only available for Google Chrome Canary.
 ### Use
 Open the extension by clicking on the `PromptThis.AI` icon in the Chrome toolbar.
 
-The extensions comes with a default set of prompts, but you can also add your own prompts by clicking on the `Add Prompt` button in the extension sidepanel or right-clicking on any page and select `Add Prompt`.
+The extensions comes with a default set of tasks, but you can also add your own tasks by clicking on the `Add Prompt` button in the extension sidepanel or right-clicking on any page and select `Add Prompt`.
 
 For quick one-off tasks, the `Prompt This` context menu option is always available on any page.
 
 ## Ideas For the Future
-
 While the current version already supports many use cases through customizations (conditions, options, variables), I have lots of ideas for making it even more powerful. Here are my ideas for new features:
 
 ### Conditions
-Conditions will control when a task appears in the context menu on a right-clicked element:
+Conditions control when a task appears in the context menu on a right-clicked element:
 - `IsEditable` to check if the right-clicked element is an editable text input
 - `IsImage` to check if the right-clicked element is an image
 - `CssSelector` to check if the right-clicked element matches a CSS selector
 - `HasMetaTag` to check if page has a meta tag with a given name and value
 
 ### Options
-Options will control the behavior of a task when it is opened or executed:
+Options control the behavior of a task when it is selected or executed:
 - `AutoSelect` to automatically select the content of the right-clicked element
 - `AutoInsert` to insert the generated text right back into the right-clicked element
 - `AutoCopy` to copy the generated text into the clipboard
 
 ### Variables
-Variables will make prompts even more dynamic:
-- `Cursor` to control where the cursor is placed inside the prompt input when opened
+Variables make prompts dynamic:
+- `Cursor` to control where the cursor is placed inside the prompt input when task is opened
 - `TextContent` or `HtmlContent` to insert the text or html content of the right-clicked element
 
-### Example: 2-Click Proofreading
-Here's how these features could work together in a real-world scenario:
-> Imagine proofreading any text you type in a textarea on any site, without having to select, copy, or paste anything.
+### Use Case: 2-Click Proofreading
+> Imagine proofreading any text you type in a textarea, on any site, without having to select, copy, or paste anything.
 
-Using the new features, it could be implemented like this:
+Here's how these features could work together in a real-world scenario:
 1. `CssSelector` condition like `textarea:read-write` to show the task only on editable textareas
 2. `AutoSelect` option to automatically grab the textarea's content without having to select it
 3. `AutoSubmit` option to execute the task immediately

@@ -32,7 +32,7 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
 
 function getDocumentLanguage(tabId) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("getDocumentLanguage", { tabId });
+        console.log('getDocumentLanguage', { tabId });
         if (!tabId)
             return undefined;
         const [{ result }] = yield chrome.scripting.executeScript({
@@ -40,13 +40,12 @@ function getDocumentLanguage(tabId) {
             func: () => {
                 var _a, _b;
                 return (document.documentElement.lang ||
-                    ((_a = document
-                        .querySelector('meta[property="og:locale"]')) === null || _a === void 0 ? void 0 : _a.getAttribute("content")) ||
-                    ((_b = document.querySelector("html")) === null || _b === void 0 ? void 0 : _b.getAttribute("lang")) ||
+                    ((_a = document.querySelector('meta[property="og:locale"]')) === null || _a === void 0 ? void 0 : _a.getAttribute('content')) ||
+                    ((_b = document.querySelector('html')) === null || _b === void 0 ? void 0 : _b.getAttribute('lang')) ||
                     navigator.language);
             },
         });
-        console.log("getDocumentLanguage:result", { result });
+        console.log('getDocumentLanguage', { result });
         return result;
     });
 }
@@ -96,7 +95,9 @@ function initDefaultPrompts() {
             name: 'Correct This Text',
             type: ApiTypes.LANGUAGE_MODEL,
             prompt: 'Correct this text for grammar and spelling mistakes:\n\n{{selection}}',
-            options: {},
+            options: {
+                autoSubmit: true,
+            },
             conditions: {
                 hasSelection: true,
             },
@@ -104,9 +105,14 @@ function initDefaultPrompts() {
         {
             id: 'rewrite',
             name: 'Rewrite This Email',
-            type: ApiTypes.LANGUAGE_MODEL,
-            prompt: 'Rewrite this email in a formal tone:\n\n{{selection}}',
-            options: {},
+            type: ApiTypes.REWRITER,
+            prompt: 'Rewrite this email to be more formal:\n\n{{selection}}',
+            options: {
+                autoSubmit: true,
+                rewriter: {
+                    tone: RewriterTones.MORE_FORMAL,
+                },
+            },
             conditions: {
                 url: 'mail.google.com',
                 hasSelection: true,
@@ -118,6 +124,7 @@ function initDefaultPrompts() {
             type: ApiTypes.SUMMARIZER,
             prompt: 'Summarize this text:\n\n{{selection}}',
             options: {
+                autoSubmit: true,
                 summarizer: {
                     type: SummaryTypes.KEY_POINTS,
                     length: SummaryLengths.SHORT,
@@ -147,6 +154,7 @@ function initDefaultPrompts() {
             type: ApiTypes.REWRITER,
             prompt: 'Shorten this tweet to 300 characters or less:\n\n{{selection}}',
             options: {
+                autoSubmit: true,
                 rewriter: {
                     tone: RewriterTones.AS_IS,
                     format: RewriterFormats.AS_IS,
@@ -271,16 +279,16 @@ function getPromptContexts(prompt, tab) {
 }
 
 function resetSidepanel(tab) {
-    console.log("resetSidepanel", { tab });
-    const id = tab.id ? { tabId: tab.id } : { windowId: tab.windowId };
-    chrome.sidePanel.setOptions(Object.assign({ path: "pages/list.html", enabled: true }, id));
+    console.log('resetSidepanel', { tab });
+    const options = tab.id ? { tabId: tab.id } : { windowId: tab.windowId };
+    chrome.sidePanel.setOptions(Object.assign({ path: 'pages/list.html', enabled: true }, options));
 }
 // https://github.com/GoogleChrome/chrome-extensions-samples/issues/987#issuecomment-2450848264
 function openSidePanel(tab, path) {
-    console.log("openSidePanel", { path, tab });
-    const id = tab.id ? { tabId: tab.id } : { windowId: tab.windowId };
-    chrome.sidePanel.setOptions(Object.assign({ path, enabled: true }, id), () => {
-        chrome.sidePanel.open(id);
+    console.log('openSidePanel', { path, tab });
+    const options = tab.id ? { tabId: tab.id } : { windowId: tab.windowId };
+    chrome.sidePanel.setOptions(Object.assign({ path, enabled: true }, options), () => {
+        chrome.sidePanel.open(options);
     });
 }
 
@@ -359,14 +367,12 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => __awaiter(void 0, 
 }));
 /**
  * Handle context menu item clicks
+ *
+ * Note: Handler cannot be async because of this bug
+ * https://stackoverflow.com/a/77213912/1967693
  */
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     console.log('contextMenus.onClicked', { info, tab });
-    /**
-     * NOTE:
-     * Handler cannot be async because of this bug:
-     * https://stackoverflow.com/a/77213912/1967693
-     */
     const tabId = tab === null || tab === void 0 ? void 0 : tab.id;
     if (!tabId)
         return;

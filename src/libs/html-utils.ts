@@ -39,7 +39,7 @@ export function setValue(element: HTMLElement, value: string | boolean | number)
 
   if (element.isContentEditable) {
     console.log('isContentEditable', { element, value });
-    // Convert \n to <br> for contentEditable elements
+    // Convert \n to <br> for editable elements
     element.innerHTML = String(value).replace(/\n/g, '<br>').trim();
   } else {
     element.textContent = String(value).trim();
@@ -63,7 +63,7 @@ export function getValue(element: HTMLElement): string | boolean | number {
   }
 
   if (element.isContentEditable) {
-    // Convert <br> back to \n for contentEditable elements
+    // Convert <br> back to \n for editable elements
     return element.innerHTML
       .replace(/<br\s*\/?>/gi, '\n') // Convert <br>, <br/>, <br /> to \n
       .trim();

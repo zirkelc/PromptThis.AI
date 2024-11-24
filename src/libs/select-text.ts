@@ -11,7 +11,5 @@ export async function selectText(tabId: number | undefined): Promise<string | un
     },
   });
 
-  console.log('selectText', { selectionText });
-
   return selectionText;
 }

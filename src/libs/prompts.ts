@@ -39,7 +39,9 @@ export function initDefaultPrompts() {
       name: 'Correct This Text',
       type: ApiTypes.LANGUAGE_MODEL,
       prompt: 'Correct this text for grammar and spelling mistakes:\n\n{{selection}}',
-      options: {},
+      options: {
+        autoSubmit: true,
+      },
       conditions: {
         hasSelection: true,
       },
@@ -47,9 +49,14 @@ export function initDefaultPrompts() {
     {
       id: 'rewrite',
       name: 'Rewrite This Email',
-      type: ApiTypes.LANGUAGE_MODEL,
-      prompt: 'Rewrite this email in a formal tone:\n\n{{selection}}',
-      options: {},
+      type: ApiTypes.REWRITER,
+      prompt: 'Rewrite this email to be more formal:\n\n{{selection}}',
+      options: {
+        autoSubmit: true,
+        rewriter: {
+          tone: RewriterTones.MORE_FORMAL,
+        },
+      },
       conditions: {
         url: 'mail.google.com',
         hasSelection: true,
@@ -61,6 +68,7 @@ export function initDefaultPrompts() {
       type: ApiTypes.SUMMARIZER,
       prompt: 'Summarize this text:\n\n{{selection}}',
       options: {
+        autoSubmit: true,
         summarizer: {
           type: SummaryTypes.KEY_POINTS,
           length: SummaryLengths.SHORT,
@@ -90,6 +98,7 @@ export function initDefaultPrompts() {
       type: ApiTypes.REWRITER,
       prompt: 'Shorten this tweet to 300 characters or less:\n\n{{selection}}',
       options: {
+        autoSubmit: true,
         rewriter: {
           tone: RewriterTones.AS_IS,
           format: RewriterFormats.AS_IS,

@@ -124,7 +124,7 @@ function createSession(type, options = {}) {
         if (type === ApiTypes.REWRITER) {
             // Bug: Writer and Rewriter APIs depend on `sharedContext` to be filled
             // https://issues.chromium.org/u/1/issues/380058928?pli=1
-            options.sharedContext = `email to hannah`; // dummy value
+            options.sharedContext = `rewrite this`; // dummy value
         }
         console.log('createSession', { options });
         return api.create(Object.assign(Object.assign({}, options), { monitor }));
@@ -150,74 +150,6 @@ function createStream(session, input) {
         }
         throw new Error('No streaming method found');
     });
-}
-
-function getElementById(id) {
-    const element = document.getElementById(id);
-    if (!element)
-        throw new Error(`Element ${id} not found`);
-    return element;
-}
-function setValue(element, value) {
-    if (element instanceof HTMLInputElement) {
-        if (element.type === 'checkbox') {
-            element.checked = Boolean(value);
-        }
-        else if (element.type === 'number') {
-            element.value = String(value);
-        }
-        else {
-            element.value = String(value);
-        }
-        return;
-    }
-    if (element instanceof HTMLSelectElement) {
-        element.value = String(value);
-        return;
-    }
-    if (element.isContentEditable) {
-        console.log('isContentEditable', { element, value });
-        // Convert \n to <br> for contentEditable elements
-        element.innerHTML = String(value).replace(/\n/g, '<br>').trim();
-    }
-    else {
-        element.textContent = String(value).trim();
-    }
-}
-function getValue(element) {
-    var _a, _b;
-    if (element instanceof HTMLInputElement) {
-        if (element.type === 'checkbox')
-            return Boolean(element.checked);
-        if (element.type === 'number')
-            return Number(element.value.trim());
-        return element.value.trim();
-    }
-    if (element instanceof HTMLSelectElement) {
-        return element.value;
-    }
-    if (element.isContentEditable) {
-        // Convert <br> back to \n for contentEditable elements
-        return element.innerHTML
-            .replace(/<br\s*\/?>/gi, '\n') // Convert <br>, <br/>, <br /> to \n
-            .trim();
-    }
-    return (_b = (_a = element.textContent) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : '';
-}
-function setEditable(element, editable) {
-    element.contentEditable = editable ? 'true' : 'false';
-}
-function setVisible(element, visible) {
-    visible ? element.removeAttribute('hidden') : element.setAttribute('hidden', '');
-}
-function setEnabled(element, enabled) {
-    element.disabled = !enabled;
-}
-function goto(path) {
-    window.location.href = path;
-}
-function scrollDown() {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
 function defaultPrompt() {
@@ -276,5 +208,73 @@ function parsePromptMenuItem(menuItemId) {
     return promptId;
 }
 
+function getElementById(id) {
+    const element = document.getElementById(id);
+    if (!element)
+        throw new Error(`Element ${id} not found`);
+    return element;
+}
+function setValue(element, value) {
+    if (element instanceof HTMLInputElement) {
+        if (element.type === 'checkbox') {
+            element.checked = Boolean(value);
+        }
+        else if (element.type === 'number') {
+            element.value = String(value);
+        }
+        else {
+            element.value = String(value);
+        }
+        return;
+    }
+    if (element instanceof HTMLSelectElement) {
+        element.value = String(value);
+        return;
+    }
+    if (element.isContentEditable) {
+        console.log('isContentEditable', { element, value });
+        // Convert \n to <br> for editable elements
+        element.innerHTML = String(value).replace(/\n/g, '<br>').trim();
+    }
+    else {
+        element.textContent = String(value).trim();
+    }
+}
+function getValue(element) {
+    var _a, _b;
+    if (element instanceof HTMLInputElement) {
+        if (element.type === 'checkbox')
+            return Boolean(element.checked);
+        if (element.type === 'number')
+            return Number(element.value.trim());
+        return element.value.trim();
+    }
+    if (element instanceof HTMLSelectElement) {
+        return element.value;
+    }
+    if (element.isContentEditable) {
+        // Convert <br> back to \n for editable elements
+        return element.innerHTML
+            .replace(/<br\s*\/?>/gi, '\n') // Convert <br>, <br/>, <br /> to \n
+            .trim();
+    }
+    return (_b = (_a = element.textContent) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : '';
+}
+function setEditable(element, editable) {
+    element.contentEditable = editable ? 'true' : 'false';
+}
+function setVisible(element, visible) {
+    visible ? element.removeAttribute('hidden') : element.setAttribute('hidden', '');
+}
+function setEnabled(element, enabled) {
+    element.disabled = !enabled;
+}
+function goto(path) {
+    window.location.href = path;
+}
+function scrollDown() {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
 export { ApiTypes as A, DefaultTemperature as D, RewriterTones as R, SummaryTypes as S, __awaiter as _, setEnabled as a, setVisible as b, setEditable as c, getPrompt as d, defaultPrompt as e, SummaryFormats as f, getElementById as g, SummaryLengths as h, DefaultTopK as i, RewriterFormats as j, RewriterLengths as k, getValue as l, scrollDown as m, createSession as n, createStream as o, parsePromptMenuItem as p, __asyncValues as q, destroySession as r, setValue as s, goto as t, setPrompt as u, requestUpdateContextMenu as v, getPrompts as w, unsetPrompt as x };
-//# sourceMappingURL=context-menu-SSnPgeV4.js.map
+//# sourceMappingURL=html-utils-K7qxwLe8.js.map

@@ -78,15 +78,12 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
 /**
  * Handle context menu item clicks
+ *
+ * Note: Handler cannot be async because of this bug
+ * https://stackoverflow.com/a/77213912/1967693
  */
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   console.log('contextMenus.onClicked', { info, tab });
-
-  /**
-   * NOTE:
-   * Handler cannot be async because of this bug:
-   * https://stackoverflow.com/a/77213912/1967693
-   */
 
   const tabId = tab?.id;
   if (!tabId) return;

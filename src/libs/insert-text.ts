@@ -91,7 +91,6 @@ export async function insertText(tabId: number | undefined, text: string): Promi
           }
 
           range.deleteContents();
-          console.log('text', { text });
           const fragments = text.split('\n').map((line, index, array) => {
             const textNode = document.createTextNode(line);
 
@@ -130,7 +129,7 @@ export async function insertText(tabId: number | undefined, text: string): Promi
 
     if (result) return result;
   } catch (error) {
-    console.error('insertText', { error });
+    console.error('Error inserting text', { error });
   }
 
   return {

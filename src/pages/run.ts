@@ -1,4 +1,3 @@
-import { marked } from 'marked';
 import {
   ApiTypes,
   createSession,
@@ -14,26 +13,25 @@ import {
   SummaryTypes,
   type AISession,
 } from '../libs/ai.js';
+import { parsePromptMenuItem } from '../libs/context-menu.js';
 import { getDocumentLanguage } from '../libs/get-document-language.js';
 import {
-  decodeText,
   getElementById,
   getValue,
-  type HTMLInputNumberElement,
-  type HTMLInputTextElement,
   scrollDown,
   setEditable,
   setEnabled,
   setValue,
   setVisible,
+  type HTMLInputNumberElement,
+  type HTMLInputTextElement,
 } from '../libs/html-utils.js';
 import { insertText } from '../libs/insert-text.js';
 import { setMarkdown } from '../libs/markdown.js';
 import { defaultPrompt, getPrompt, type Prompt } from '../libs/prompts.js';
+import { selectText } from '../libs/select-text.js';
 import { closeSidepanel } from '../libs/sidepanel.js';
 import './style.css';
-import { parsePromptMenuItem } from '../libs/context-menu.js';
-import { selectText } from '../libs/select-text.js';
 
 /**
  * Prompt
@@ -132,7 +130,6 @@ async function loadPrompt() {
     '{{language}}': language || '',
     '{{url}}': pageUrl || '',
   };
-  console.log('replacements', { replacements });
 
   let promptText = currentPrompt.prompt;
 
@@ -140,6 +137,7 @@ async function loadPrompt() {
     promptText = promptText.replaceAll(variable, value);
   }
 
+  // If the prompt doesn't contain the {{selection}} variable, append the selectionText to the end of the prompt
   if (!currentPrompt.prompt.includes('{{selection}}') && selectionText) {
     promptText = `${promptText}\n\n${selectionText}`;
   }
@@ -170,6 +168,7 @@ async function loadPrompt() {
 
 async function submitPrompt() {
   console.log('submitPrompt');
+
   if (!currentPrompt) return;
 
   const prompt = getValue(promptTextInput);
@@ -231,7 +230,7 @@ async function submitPrompt() {
     setVisible(copyBtn, true);
   } catch (e) {
     const error = e as Error;
-    console.error('Error', { error });
+    console.error('Error submitting prompt', { error });
     setValue(resultElement, `Error: ${error?.message ?? 'Unknown error'}`);
   } finally {
     destroySession(currentSession);

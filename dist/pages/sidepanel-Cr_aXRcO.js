@@ -1,8 +1,9 @@
 function closeSidepanel() {
+    console.log('closeSidepanel');
     chrome.runtime.sendMessage({
-        action: "resetSidepanel",
+        action: 'resetSidepanel',
     }, () => window.close());
 }
 
 export { closeSidepanel as c };
-//# sourceMappingURL=sidepanel-58eTr2jr.js.map
+//# sourceMappingURL=sidepanel-Cr_aXRcO.js.map
