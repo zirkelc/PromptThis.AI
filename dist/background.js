@@ -122,7 +122,7 @@ function initDefaultPrompts() {
             id: 'summarize',
             name: 'Summarize This Article',
             type: ApiTypes.SUMMARIZER,
-            prompt: 'Summarize this text:\n\n{{selection}}',
+            prompt: 'Summarize this article:\n\n{{selection}}',
             options: {
                 autoSubmit: true,
                 summarizer: {
@@ -188,47 +188,48 @@ function updateContextMenu(tab) {
         const currentUrl = (tab === null || tab === void 0 ? void 0 : tab.url) || '';
         const prompts = yield getPrompts();
         try {
-            chrome.contextMenus.removeAll(() => __awaiter(this, void 0, void 0, function* () {
-                console.log('updateContextMenus', { prompts, currentUrl });
-                const items = [];
-                for (const prompt of prompts) {
-                    const contexts = yield getPromptContexts(prompt, tab);
-                    if (contexts) {
-                        items.push({
-                            id: formatPromptMenuItem(prompt.id),
-                            title: prompt.name,
-                            parentId: MenuItemIds.ROOT,
-                            contexts: contexts,
-                        });
-                    }
-                }
-                chrome.contextMenus.create({
-                    id: MenuItemIds.ROOT,
-                    title: 'PromptThis.AI',
-                    contexts: ['all'],
-                });
-                items.forEach((item) => chrome.contextMenus.create(item));
-                if (items.length) {
-                    chrome.contextMenus.create({
-                        id: 'separator1',
-                        type: 'separator',
+            // Function returns a promise
+            // https://developer.chrome.com/docs/extensions/reference/api/contextMenus#method-removeAll
+            yield chrome.contextMenus.removeAll();
+            console.log('updateContextMenus', { prompts, currentUrl });
+            const items = [];
+            for (const prompt of prompts) {
+                const contexts = yield getPromptContexts(prompt, tab);
+                if (contexts) {
+                    items.push({
+                        id: formatPromptMenuItem(prompt.id),
+                        title: prompt.name,
                         parentId: MenuItemIds.ROOT,
-                        contexts: ['all'],
+                        contexts: contexts,
                     });
                 }
+            }
+            chrome.contextMenus.create({
+                id: MenuItemIds.ROOT,
+                title: 'PromptThis.AI',
+                contexts: ['all'],
+            });
+            items.forEach((item) => chrome.contextMenus.create(item));
+            if (items.length) {
                 chrome.contextMenus.create({
-                    id: `${MenuItemIds.RUN}/`,
-                    title: 'Prompt This',
+                    id: 'separator1',
+                    type: 'separator',
                     parentId: MenuItemIds.ROOT,
                     contexts: ['all'],
                 });
-                chrome.contextMenus.create({
-                    id: MenuItemIds.ADD,
-                    title: 'Add Prompt',
-                    parentId: MenuItemIds.ROOT,
-                    contexts: ['all'],
-                });
-            }));
+            }
+            chrome.contextMenus.create({
+                id: `${MenuItemIds.RUN}/`,
+                title: 'Prompt This',
+                parentId: MenuItemIds.ROOT,
+                contexts: ['all'],
+            });
+            chrome.contextMenus.create({
+                id: MenuItemIds.ADD,
+                title: 'Add Prompt',
+                parentId: MenuItemIds.ROOT,
+                contexts: ['all'],
+            });
         }
         catch (error) {
             console.error('Error updating context menu:', error);

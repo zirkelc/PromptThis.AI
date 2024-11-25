@@ -17,54 +17,56 @@ export async function updateContextMenu(tab: chrome.tabs.Tab) {
   const prompts = await getPrompts();
 
   try {
-    chrome.contextMenus.removeAll(async () => {
-      console.log('updateContextMenus', { prompts, currentUrl });
+    // Function returns a promise
+    // https://developer.chrome.com/docs/extensions/reference/api/contextMenus#method-removeAll
+    await chrome.contextMenus.removeAll();
 
-      const items: Array<chrome.contextMenus.CreateProperties> = [];
+    console.log('updateContextMenus', { prompts, currentUrl });
 
-      for (const prompt of prompts) {
-        const contexts = await getPromptContexts(prompt, tab);
+    const items: Array<chrome.contextMenus.CreateProperties> = [];
 
-        if (contexts) {
-          items.push({
-            id: formatPromptMenuItem(prompt.id),
-            title: prompt.name,
-            parentId: MenuItemIds.ROOT,
-            contexts: contexts,
-          });
-        }
-      }
+    for (const prompt of prompts) {
+      const contexts = await getPromptContexts(prompt, tab);
 
-      chrome.contextMenus.create({
-        id: MenuItemIds.ROOT,
-        title: 'PromptThis.AI',
-        contexts: ['all'],
-      });
-
-      items.forEach((item) => chrome.contextMenus.create(item));
-
-      if (items.length) {
-        chrome.contextMenus.create({
-          id: 'separator1',
-          type: 'separator',
+      if (contexts) {
+        items.push({
+          id: formatPromptMenuItem(prompt.id),
+          title: prompt.name,
           parentId: MenuItemIds.ROOT,
-          contexts: ['all'],
+          contexts: contexts,
         });
       }
+    }
 
+    chrome.contextMenus.create({
+      id: MenuItemIds.ROOT,
+      title: 'PromptThis.AI',
+      contexts: ['all'],
+    });
+
+    items.forEach((item) => chrome.contextMenus.create(item));
+
+    if (items.length) {
       chrome.contextMenus.create({
-        id: `${MenuItemIds.RUN}/`,
-        title: 'Prompt This',
+        id: 'separator1',
+        type: 'separator',
         parentId: MenuItemIds.ROOT,
         contexts: ['all'],
       });
+    }
 
-      chrome.contextMenus.create({
-        id: MenuItemIds.ADD,
-        title: 'Add Prompt',
-        parentId: MenuItemIds.ROOT,
-        contexts: ['all'],
-      });
+    chrome.contextMenus.create({
+      id: `${MenuItemIds.RUN}/`,
+      title: 'Prompt This',
+      parentId: MenuItemIds.ROOT,
+      contexts: ['all'],
+    });
+
+    chrome.contextMenus.create({
+      id: MenuItemIds.ADD,
+      title: 'Add Prompt',
+      parentId: MenuItemIds.ROOT,
+      contexts: ['all'],
     });
   } catch (error) {
     console.error('Error updating context menu:', error);

@@ -66,7 +66,7 @@ export function initDefaultPrompts() {
       id: 'summarize',
       name: 'Summarize This Article',
       type: ApiTypes.SUMMARIZER,
-      prompt: 'Summarize this text:\n\n{{selection}}',
+      prompt: 'Summarize this article:\n\n{{selection}}',
       options: {
         autoSubmit: true,
         summarizer: {
@@ -106,7 +106,7 @@ export function initDefaultPrompts() {
         },
       },
       conditions: {
-        url: '/x\\.com|bsky\\.app/', // Twitter or Bluesky
+        url: '/x\\.com|bsky\\.app/', // X or Bluesky
         hasSelection: true,
       },
     },
